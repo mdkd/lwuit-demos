@@ -10,6 +10,7 @@ import com.nokia.example.birthdays.view.BirthdaysListView;
 import com.nokia.example.birthdays.view.ChooseBirthdayView;
 import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
+import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
 
 public class BirthdayMidlet extends MIDlet {
@@ -37,9 +38,17 @@ public class BirthdayMidlet extends MIDlet {
         instance = this;
 
         Display.init(this);
+        checkPIMAvailability();        
         createViews();
         
         birthDaysListView.show();
+    }
+    
+    private void checkPIMAvailability() {
+        if (System.getProperty("microedition.pim.version") == null) {
+            // TODO: handle with a proper dialog
+            System.out.println("PIM API is required but not found");
+        }        
     }
 
     private void createViews() {

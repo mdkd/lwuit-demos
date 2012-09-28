@@ -12,15 +12,15 @@ import java.util.Vector;
  *
  */
 public class BirthdaySorter {
-
-    private static final long NOW_MILLIS = new Date().getTime();
-    private static final int NOW_YEAR = Calendar.getInstance().get(Calendar.YEAR);
+    
     private static final int BEFORE = -1;
     private static final int EQUAL = 0;
     private static final int AFTER = 1;
     
     private static final Calendar CAL1 = Calendar.getInstance();
     private static final Calendar CAL2 = Calendar.getInstance();
+    private static final long NOW_MILLIS = new Date().getTime();
+    private static final int NOW_YEAR = Calendar.getInstance().get(Calendar.YEAR);
             
     /**
      * Sort a vector of birthdays in the order of upcoming birthdays.
@@ -46,7 +46,8 @@ public class BirthdaySorter {
 
     }
     
-    private static void mergeSortRecursive(Birthday[] target, Birthday[] workspace, int lowerBoundary, int upperBoundary) {
+    private static void mergeSortRecursive(Birthday[] target,
+            Birthday[] workspace, int lowerBoundary, int upperBoundary) {
         // Range is 1, no need to sort
         if (lowerBoundary == upperBoundary) {
             return;
@@ -60,7 +61,8 @@ public class BirthdaySorter {
         merge(target, workspace, lowerBoundary, mid + 1, upperBoundary);  // Merge the two
     }
     
-    private static void merge(Birthday[] target, Birthday[] workspace, int lowPointer, int highPointer, int upperBoundary) {
+    private static void merge(Birthday[] target, Birthday[] workspace,
+            int lowPointer, int highPointer, int upperBoundary) {
         int i = 0;
         int lowerBoundary = lowPointer;
         int mid = highPointer - 1;
@@ -88,18 +90,40 @@ public class BirthdaySorter {
     }
     
     private static int compare(Birthday date1, Birthday date2) {        
-        // Disregard the year by assuming this year
+        // Disregard the year by comparing the dates as if they belong to
+        // current year: here we're only interested in the month + day
         CAL1.setTime(date1.getBirthday());
         CAL1.set(Calendar.YEAR, NOW_YEAR);
         CAL2.setTime(date2.getBirthday());
         CAL2.set(Calendar.YEAR, NOW_YEAR);
-        
+
         long time1 = CAL1.getTime().getTime();
         long time2 = CAL2.getTime().getTime();
         
-        // Before or after today this year?
-        long diff = time1 - time2;
+        /*
+            Suppose it's now the 1st of August:
+            1 2 3 4 5 6 7 8 9 10 11 12
+                          ^
+            For showing the upcoming birthdays list, we need to consider
+            whether the dates compared have already happened this year or not.
+            
+            This means that if people had birthdays each month, their
+            display order, as viewed on August 1st, would be:
+            8 9 10 11 12 1 2 3 4 5 6 7
+        */
         
+        // Before or after today this year?
+        if (time1 < NOW_MILLIS && time2 > NOW_MILLIS) {
+            // time1 has also happened this year, needs to go after time2
+            return AFTER;
+        } else if (time1 > NOW_MILLIS && time2 < NOW_MILLIS) {
+            return BEFORE;
+        }
+        
+        // If we reached this point, if means time1 and time2 are both on the
+        // same side of the year, and we can compare them normally.
+        
+        long diff = time1 - time2;
         // If date1 < date2, return BEFORE (-1)
         if (diff < 0) {
             return BEFORE;
