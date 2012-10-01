@@ -1,0 +1,92 @@
+LWUIT Birthdays
+=========================
+
+LWUIT Birthdays is an example project demonstrating how to use the LWUIT
+Calendar component together with the Series 40 PIM APIs to create a simple
+Birthdays application.
+
+
+1. Usage
+-------------------------------------------------------------------------------
+
+TODO
+
+
+2. Prerequisites
+-------------------------------------------------------------------------------
+
+Java ME basics
+LWUIT basics
+
+
+3. Important classes
+-------------------------------------------------------------------------------
+
+TODO
+
+
+4. Compatibility
+-------------------------------------------------------------------------------
+
+Series 40 6th Edition and newer devices which have a 240px wide or wider 
+screen.
+
+Tested on: TODO
+Developed with: Netbeans 7.2 and Nokia SDK 2.0 for Java.
+
+4.1 Required capabilities
+-------------------------
+
+CLDC 1.1, MIDP 2.0 and, PIM API (JSR-75).
+
+4.2 Known issues
+----------------
+
+None.
+
+
+5. Building, installing, and running the application
+-------------------------------------------------------------------------------
+
+5.1 Preparations
+----------------
+
+Before opening the project, make sure Nokia SDK 2.0 for Java is installed and 
+added to NetBeans.
+
+5.2 Building
+------------
+
+The project can be easily opened in NetBeans by selecting 'Open Project' 
+from the File menu and selecting the application. Building is done by
+selecting 'Build main project'.
+
+5.3 Series 40 device
+--------------------
+
+You can istall the application on a phone by transferring the JAR file 
+via Nokia Suite or over Bluetooth.
+
+
+6. License
+-------------------------------------------------------------------------------
+
+See the license text file delivered with this project. The license file is also 
+available online at 
+http://projects.developer.nokia.com/LWUIT_Birthdays/browser/LICENSE.TXT
+
+
+7. Related documentation
+-------------------------------------------------------------------------------
+
+LWUIT for Series 40
+- http://projects.developer.nokia.com/LWUIT_for_Series_40
+
+Nokia SDK for Java
+- http://www.developer.nokia.com/Develop/Java/Tools/
+
+
+8. Version history
+-------------------------------------------------------------------------------
+
+v1.0    Initial release.
