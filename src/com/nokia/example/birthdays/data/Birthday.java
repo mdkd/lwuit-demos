@@ -61,17 +61,16 @@ public class Birthday {
         String unit = "";
 
         if (timeUntilBirthday < 86400) {
-            // today
             return "today";
         }
         else if (timeUntilBirthday < 2592000) {
-            // x days
+            // "x days"
             units = timeUntilBirthday / 86400;
             unit = (units > 1 ? "" + units : "a") + " day" + (units > 1 ? "s" : "");
         }
         else if (timeUntilBirthday < 31536000) {
-            // x months
-            units = timeUntilBirthday / 2592000;
+            // "x months" (11 full months at most)
+            units = Math.min(11, timeUntilBirthday / 2592000);
             unit = (units > 1 ? "" + units : "a") + " month" + (units > 1 ? "s" : "");
         }
 

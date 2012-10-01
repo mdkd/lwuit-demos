@@ -49,7 +49,7 @@ public class BirthdaySorter {
         // Rearrange elements in the original vector
         System.out.println("Sorted:");
         for (int i = 0; i < target.length; i++) {
-            System.out.println(i + ". " + target[i]);
+            System.out.println(i + ". " + target[i] + " (" + target[i].prettyPrint() + ")");
             birthdays.setElementAt(target[i], i);
         }
         
