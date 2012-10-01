@@ -40,41 +40,42 @@ public class Birthday {
      *
      * @return Pretty-printed birthday as a String
      */
-    public String prettyPrint() {
+    public String getTimeUntilNextOccurrence() {
         Calendar c = Calendar.getInstance();
         int currentYear = c.get(Calendar.YEAR);
         c.setTime(birthday);
-        c.set(Calendar.YEAR, currentYear);
-       
+        c.set(Calendar.YEAR, currentYear);       
         long then = c.getTime().getTime() / 1000;
-        long now = new Date().getTime() / 1000;
         
-        // If already occurred this year, consider the next year
+        // If birthday already occurred this year, consider the next year
+        long now = new Date().getTime() / 1000;
         if (then < now) {
             // 60 seconds * 60 minutes * 24 hours * 365 days
             then += 31536000; 
-        }                
-        long timeUntilBirthday = then - now;
-        
-        String result = "";
-        long units = 0;
-        String unit = "";
+        }
 
+        // Next, calculate and pretty-print the time until the birthday
+        long timeUntilBirthday = then - now;
         if (timeUntilBirthday < 86400) {
             return "today";
         }
-        else if (timeUntilBirthday < 2592000) {
-            // "x days"
+        
+        long units = 0;
+        String unit = "";
+        
+        // Less than a month -> "x days"
+        if (timeUntilBirthday < 2592000) {
             units = timeUntilBirthday / 86400;
-            unit = (units > 1 ? "" + units : "a") + " day" + (units > 1 ? "s" : "");
+            unit = (units > 1 ? "" + units : "a") +
+                " day" + (units > 1 ? "s" : "");
         }
+        // Less than a year -> "x months" (11 full months at most)
         else if (timeUntilBirthday < 31536000) {
-            // "x months" (11 full months at most)
             units = Math.min(11, timeUntilBirthday / 2592000);
-            unit = (units > 1 ? "" + units : "a") + " month" + (units > 1 ? "s" : "");
+            unit = (units > 1 ? "" + units : "a") +
+                " month" + (units > 1 ? "s" : "");
         }
-
-        result = "in " + unit;
-        return result;
+        
+        return "in " + unit;
     }    
 }
