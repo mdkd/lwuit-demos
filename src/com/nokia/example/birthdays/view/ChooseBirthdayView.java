@@ -1,6 +1,14 @@
-package com.nokia.example.birthdays.view;
+/*
+ * Copyright © 2012 Nokia Corporation. All rights reserved.
+ * Nokia and Nokia Connecting People are registered trademarks of Nokia Corporation.
+ * Oracle and Java are trademarks or registered trademarks of Oracle and/or its
+ * affiliates. Other product and company names mentioned herein may be trademarks
+ * or trade names of their respective owners.
+ *
+ * See LICENSE.TXT for license information.
+ */
 
-import java.util.Date;
+package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
 import com.sun.lwuit.Calendar;
@@ -9,6 +17,7 @@ import com.sun.lwuit.Form;
 import com.sun.lwuit.Label;
 import com.sun.lwuit.TextField;
 import com.sun.lwuit.events.ActionEvent;
+import java.util.Date;
 
 public class ChooseBirthdayView extends Form {
 

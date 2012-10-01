@@ -1,4 +1,11 @@
 /*
+ * Copyright © 2012 Nokia Corporation. All rights reserved.
+ * Nokia and Nokia Connecting People are registered trademarks of Nokia Corporation.
+ * Oracle and Java are trademarks or registered trademarks of Oracle and/or its
+ * affiliates. Other product and company names mentioned herein may be trademarks
+ * or trade names of their respective owners.
+ *
+ * See LICENSE.TXT for license information.
  */
 package com.nokia.example.birthdays.data;
 
@@ -9,6 +16,7 @@ import javax.microedition.pim.Contact;
 import javax.microedition.pim.ContactList;
 import javax.microedition.pim.PIM;
 import javax.microedition.pim.PIMException;
+import javax.microedition.pim.PIMItem;
 
 public class BirthdayManager {
     private static BirthdayManager instance;
@@ -25,8 +33,29 @@ public class BirthdayManager {
         if (birthdays == null) {
             birthdays = new Vector();
         }
+        
         System.out.println("Adding birthday: " + name + ", " + birthday);
         birthdays.addElement(new Birthday(name, birthday));
+        
+        ContactList contactList;
+        try {
+            contactList = (ContactList)
+                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.WRITE_ONLY);
+            
+            String[] names =
+                new String[contactList.stringArraySize(Contact.NAME)];
+            
+            names[Contact.NAME_GIVEN] = name;
+            
+            Contact contact = contactList.createContact();
+            contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
+            contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE, birthday.getTime());
+            contact.commit();
+            contactList.close();
+        }
+        catch (PIMException pime) {
+            System.out.println("Error saving new Contact: " + pime.getMessage());
+        }
     }
 
     public Vector getBirthdays() {        
@@ -37,7 +66,8 @@ public class BirthdayManager {
         try {
             contactList = (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
             contactItems = contactList.items();
-        } catch (PIMException pime) {
+        }
+        catch (PIMException pime) {
             System.out.println("Could not open PIM contact list: " + pime.getMessage());
         }
         
@@ -54,14 +84,14 @@ public class BirthdayManager {
                 Date birthDate = new Date(contact.getDate(Contact.BIRTHDAY, 0));
                 
                 birthday = new Birthday(name, birthDate);                
-                System.out.println(birthday);
                 birthdays.addElement(birthday);
             }
         }
         
         try {
             contactList.close();
-        } catch (Exception e) {}
+        }
+        catch (Exception e) {}
         
         return birthdays;
     }

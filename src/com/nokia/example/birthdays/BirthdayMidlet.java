@@ -1,17 +1,24 @@
+/*
+ * Copyright © 2012 Nokia Corporation. All rights reserved.
+ * Nokia and Nokia Connecting People are registered trademarks of Nokia Corporation.
+ * Oracle and Java are trademarks or registered trademarks of Oracle and/or its
+ * affiliates. Other product and company names mentioned herein may be trademarks
+ * or trade names of their respective owners.
+ *
+ * See LICENSE.TXT for license information.
+ */
+
 package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.BirthdayManager;
+import com.nokia.example.birthdays.view.BirthdaysListView;
+import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
+import com.nokia.example.birthdays.view.ChooseBirthdayView;
+import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
+import com.sun.lwuit.Display;
 import java.util.Date;
-
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-
-import com.nokia.example.birthdays.view.BirthdaysListView;
-import com.nokia.example.birthdays.view.ChooseBirthdayView;
-import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
-import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
-import com.sun.lwuit.Dialog;
-import com.sun.lwuit.Display;
 
 public class BirthdayMidlet extends MIDlet {
 
@@ -66,6 +73,7 @@ public class BirthdayMidlet extends MIDlet {
         chooseBirthdayView = new ChooseBirthdayView(new BirthdayListener() {
                 public void birthdayAdded(String name, Date birthday) {
                     BirthdayManager.getInstance().addBirthday(name, birthday);
+                    birthDaysListView.refresh();
                     birthDaysListView.show();
                 }
             }, new BackListener() {

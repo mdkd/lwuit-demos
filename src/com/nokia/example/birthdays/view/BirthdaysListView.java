@@ -1,3 +1,13 @@
+/*
+ * Copyright © 2012 Nokia Corporation. All rights reserved.
+ * Nokia and Nokia Connecting People are registered trademarks of Nokia Corporation.
+ * Oracle and Java are trademarks or registered trademarks of Oracle and/or its
+ * affiliates. Other product and company names mentioned herein may be trademarks
+ * or trade names of their respective owners.
+ *
+ * See LICENSE.TXT for license information.
+ */
+
 package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet;
@@ -11,7 +21,7 @@ import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
 import com.sun.lwuit.list.DefaultListCellRenderer;
 import com.sun.lwuit.list.DefaultListModel;
-import com.sun.lwuit.list.ListCellRenderer;
+import com.sun.lwuit.list.ListModel;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -28,17 +38,25 @@ public class BirthdaysListView extends Form {
 
     public BirthdaysListView(BirthdayInsertionListener birthdayInsertionListener, final ExitListener exitListener) {
         super("Birthdays");
-        
         this.birthdayListener = birthdayInsertionListener;
         
+        addCommands();
+        createList();
+    }
+    
+    private void createList() {
+        if (birthdayList != null) {
+            removeComponent(birthdayList);        
+        }
         birthdayList = new List();
         addComponent(birthdayList);
-        addCommands();
         
-        birthdayList.setModel(new DefaultListModel());
         DefaultListCellRenderer renderer = new DefaultListCellRenderer();
         renderer.setShowNumbers(false);
         birthdayList.setRenderer(renderer);
+                
+        ListModel listModel = new DefaultListModel();
+        birthdayList.setModel(listModel);
         
         populateBirthdays();
     }
@@ -59,10 +77,12 @@ public class BirthdaysListView extends Form {
         addCommand(exitCommand);
         setBackCommand(exitCommand);        
     }
+    
+    public void refresh() {
+        createList();
+    }
 
     public final void populateBirthdays() {
-        System.out.println("Populating list of birthdays");
-        
         Vector birthdays = BirthdayManager.getInstance().getBirthdays();
         BirthdaySorter.sort(birthdays);
         
