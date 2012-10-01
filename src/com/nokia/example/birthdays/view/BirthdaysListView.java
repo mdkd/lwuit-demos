@@ -19,7 +19,6 @@ import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
-import com.sun.lwuit.list.DefaultListCellRenderer;
 import com.sun.lwuit.list.DefaultListModel;
 import com.sun.lwuit.list.ListModel;
 import java.util.Enumeration;
@@ -36,7 +35,8 @@ public class BirthdaysListView extends Form {
         public void birthdayInsertionRequested();
     }
 
-    public BirthdaysListView(BirthdayInsertionListener birthdayInsertionListener, final ExitListener exitListener) {
+    public BirthdaysListView(BirthdayInsertionListener birthdayInsertionListener,
+        final ExitListener exitListener) {
         super("Birthdays");
         this.birthdayListener = birthdayInsertionListener;
         
@@ -49,11 +49,8 @@ public class BirthdaysListView extends Form {
             removeComponent(birthdayList);        
         }
         birthdayList = new List();
-        addComponent(birthdayList);
-        
-        DefaultListCellRenderer renderer = new DefaultListCellRenderer();
-        renderer.setShowNumbers(false);
-        birthdayList.setRenderer(renderer);
+        birthdayList.setRenderer(new BirthdayListItemRenderer());
+        addComponent(birthdayList);        
                 
         ListModel listModel = new DefaultListModel();
         birthdayList.setModel(listModel);

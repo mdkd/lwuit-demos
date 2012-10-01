@@ -18,7 +18,11 @@ import javax.microedition.pim.PIM;
 import javax.microedition.pim.PIMException;
 import javax.microedition.pim.PIMItem;
 
+/**
+ * Access and create new Birthdays.
+ */
 public class BirthdayManager {
+    
     private static BirthdayManager instance;
     private Vector birthdays = new Vector();
 
@@ -29,6 +33,12 @@ public class BirthdayManager {
         return instance;
     }
 
+    /**
+     * Create a new Birthday (Contact).
+     * 
+     * @param name Name of birthday hero
+     * @param birthday Date of birth
+     */
     public void addBirthday(String name, Date birthday) {
         if (birthdays == null) {
             birthdays = new Vector();
