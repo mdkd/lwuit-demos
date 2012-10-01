@@ -14,12 +14,22 @@ import java.util.Date;
 
 public class Birthday {
     
+    public static final String[] MONTHS = { "Jan", "Feb", "Mar", "Apr", "May",
+        "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    
+    public static final long SECONDS_IN_YEAR = 31536000;
+    
     private String name;
-    private Date birthday;
+    private Calendar birthday = Calendar.getInstance();
+    private String formattedBirthdate;
 
-    public Birthday(String name, Date birthday) {
+    public Birthday(String name, Date date) {
         this.name = name;
-        this.birthday = birthday;
+        this.birthday.setTime(date);
+        this.formattedBirthdate =
+            MONTHS[birthday.get(Calendar.MONTH)] + " " +
+            birthday.get(Calendar.DAY_OF_MONTH) + " " +
+            birthday.get(Calendar.YEAR);
     }
 
     public String getName() {
@@ -27,11 +37,23 @@ public class Birthday {
     }
 
     public Date getBirthday() {
-        return birthday;
+        return birthday.getTime();
     }
 
     public String toString() {
-        return name + " (" + birthday + ")";
+        return name + " (" + getFormattedBirthDate() + ")";
+    }
+    
+    public String getFormattedBirthDate() {        
+        return formattedBirthdate;
+    }
+    
+    public String getFormattedAgeOnNextBirthday() {
+        long secondsFromBirth =
+            (new Date().getTime() - birthday.getTime().getTime()) / 1000;
+        
+        return "" +
+            Math.max(1, (int) Math.ceil(secondsFromBirth / SECONDS_IN_YEAR));
     }
     
     /**
@@ -43,7 +65,7 @@ public class Birthday {
     public String getTimeUntilNextOccurrence() {
         Calendar c = Calendar.getInstance();
         int currentYear = c.get(Calendar.YEAR);
-        c.setTime(birthday);
+        c.setTime(birthday.getTime());
         c.set(Calendar.YEAR, currentYear);       
         long then = c.getTime().getTime() / 1000;
         

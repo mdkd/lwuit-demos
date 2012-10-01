@@ -23,6 +23,8 @@ import javax.microedition.pim.PIMItem;
  */
 public class BirthdayManager {
     
+    private final long NOW_MILLIS = new Date().getTime();
+
     private static BirthdayManager instance;
     private Vector birthdays = new Vector();
 
@@ -106,10 +108,13 @@ public class BirthdayManager {
                 String name =
                     (names[first] != null ? names[first] + " " : "") +
                     (names[last] != null ? names[last] : "");
-                
-                birthdays.addElement(new Birthday(name,
-                    new Date(contact.getDate(Contact.BIRTHDAY, 0)))
-                );
+
+                // Only include birthdays for people that have been born
+                long birthdayMillis = contact.getDate(Contact.BIRTHDAY, 0);
+                if (birthdayMillis < NOW_MILLIS) {
+                    Date birthday = new Date(birthdayMillis);                
+                    birthdays.addElement(new Birthday(name, birthday));
+                }
             }
         }
         

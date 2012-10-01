@@ -72,8 +72,8 @@ public class BirthdayListItemRenderer
     public Component getListCellRendererComponent(List list, Object object, int index, boolean isSelected) {
         final Birthday birthday = (Birthday) object;
         
-        nameLabel.setText(birthday.getName());
-        dateLabel.setText(birthday.getBirthday().toString());
+        nameLabel.setText(birthday.getName() + " (" + birthday.getFormattedAgeOnNextBirthday() + ")");
+        dateLabel.setText(birthday.getFormattedBirthDate());
         descriptionLabel.setText(birthday.getTimeUntilNextOccurrence());
         
         return this;
