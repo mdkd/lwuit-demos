@@ -50,6 +50,8 @@ public class BirthdayManager {
             Contact contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
             contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE, birthday.getTime());
+            
+            // Save Contact and close the PIM access
             contact.commit();
             contactList.close();
         }
@@ -58,6 +60,11 @@ public class BirthdayManager {
         }
     }
 
+    /**
+     * Read contacts and create a Vector of Birthdays.
+     * 
+     * @return Vector object of birthdays for phone contacts
+     */
     public Vector getBirthdays() {        
         PIM pim = PIM.getInstance();
         
@@ -72,19 +79,27 @@ public class BirthdayManager {
         }
         
         Contact contact = null;
-        Birthday birthday = null;
+        int first = Contact.NAME_GIVEN;
+        int last = Contact.NAME_FAMILY;
         
+        // Import contact list elements into Birthday objects
         while (contactItems.hasMoreElements()) {
             contact = (Contact) contactItems.nextElement();
             
-            if (contact.countValues(Contact.BIRTHDAY) > 0 && contact.countValues(Contact.NAME) > 0) {
-                String[] nameArray = contact.getStringArray(Contact.NAME, Contact.ATTR_NONE);
-                String name =
-                    (nameArray[Contact.NAME_GIVEN] != null ? nameArray[Contact.NAME_GIVEN] + " " : "") + nameArray[Contact.NAME_FAMILY];
-                Date birthDate = new Date(contact.getDate(Contact.BIRTHDAY, 0));
+            // To make a sensible display item, the Contact needs to have both
+            // a name and a birthday
+            if (contact.countValues(Contact.BIRTHDAY) > 0 &&
+                contact.countValues(Contact.NAME) > 0) {
+                String[] names =
+                    contact.getStringArray(Contact.NAME, Contact.ATTR_NONE);
                 
-                birthday = new Birthday(name, birthDate);                
-                birthdays.addElement(birthday);
+                String name =
+                    (names[first] != null ? names[first] + " " : "") +
+                    (names[last] != null ? names[last] : "");
+                
+                birthdays.addElement(new Birthday(name,
+                    new Date(contact.getDate(Contact.BIRTHDAY, 0)))
+                );
             }
         }
         
