@@ -10,13 +10,13 @@
 
 package com.nokia.example.birthdays;
 
-import com.nokia.example.birthdays.data.BirthdayManager;
+import com.nokia.example.birthdays.data.Birthday;
+import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.view.BirthdaysListView;
 import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ChooseBirthdayView;
 import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
 import com.sun.lwuit.Display;
-import java.util.Date;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -58,8 +58,13 @@ public class BirthdayMidlet extends MIDlet {
         }        
     }
 
+    /*
+     * Create application vies. The Midlet acts as a central controller,
+     * changing views with the help of listeners.
+     */
     private void createViews() {
-        birthDaysListView = new BirthdaysListView(new BirthdayInsertionListener() {
+        birthDaysListView = new BirthdaysListView(
+            new BirthdayInsertionListener() {
                 public void birthdayInsertionRequested() {
                     chooseBirthdayView.show();
                 }
@@ -70,10 +75,10 @@ public class BirthdayMidlet extends MIDlet {
             }
         );
 
-        chooseBirthdayView = new ChooseBirthdayView(new BirthdayListener() {
-                public void birthdayAdded(String name, Date birthday) {
-                    BirthdayManager.getInstance().addBirthday(name, birthday);
-                    birthDaysListView.refresh();
+        chooseBirthdayView = new ChooseBirthdayView(
+            new BirthdayListener() {
+                public void birthdayAdded(Birthday birthday) {
+                    BirthdayListModel.getInstance().addItem(birthday);
                     birthDaysListView.show();
                 }
             }, new BackListener() {

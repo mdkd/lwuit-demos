@@ -19,35 +19,33 @@ import javax.microedition.pim.PIMException;
 import javax.microedition.pim.PIMItem;
 
 /**
- * Access and create new Birthdays.
+ * Access and create new Birthdays via the PIM API.
+ * 
+ * Does not care about the big picture, only relays data.
  */
-public class BirthdayManager {
+public class PIMContactHandler {
     
     private final long NOW_MILLIS = new Date().getTime();
+    private final int FIRST = Contact.NAME_GIVEN;
+    private final int LAST = Contact.NAME_FAMILY;
 
-    private static BirthdayManager instance;
-    private Vector birthdays = new Vector();
+    private static PIMContactHandler instance;    
 
-    public static BirthdayManager getInstance() {
+    public static PIMContactHandler getInstance() {
         if (instance == null) {
-            instance = new BirthdayManager();
+            instance = new PIMContactHandler();
         }
         return instance;
     }
 
     /**
-     * Create a new Birthday (Contact).
+     * Create a Contact with birthday in the phone memory.
      * 
      * @param name Name of birthday hero
      * @param birthday Date of birth
      */
-    public void addBirthday(String name, Date birthday) {
-        if (birthdays == null) {
-            birthdays = new Vector();
-        }
-        
-        System.out.println("Adding birthday: " + name + ", " + birthday);
-        birthdays.addElement(new Birthday(name, birthday));
+    public void addBirthday(Birthday birthday) {
+        System.out.println("Adding birthday via PIM: " + birthday);
         
         ContactList contactList;
         try {
@@ -55,13 +53,13 @@ public class BirthdayManager {
                 PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.WRITE_ONLY);
             
             String[] names =
-                new String[contactList.stringArraySize(Contact.NAME)];
-            
-            names[Contact.NAME_GIVEN] = name;
+                new String[contactList.stringArraySize(Contact.NAME)];            
+            names[FIRST] = birthday.getName();
             
             Contact contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
-            contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE, birthday.getTime());
+            contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE,
+                birthday.getBirthday().getTime());
             
             // Save Contact and close the PIM access
             contact.commit();
@@ -78,43 +76,29 @@ public class BirthdayManager {
      * @return Vector object of birthdays for phone contacts
      */
     public Vector getBirthdays() {        
-        PIM pim = PIM.getInstance();
-        
         ContactList contactList = null;
         Enumeration contactItems = null;
+        
         try {
-            contactList = (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
+            PIM pim = PIM.getInstance();
+            contactList =
+                (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
             contactItems = contactList.items();
         }
         catch (PIMException pime) {
-            System.out.println("Could not open PIM contact list: " + pime.getMessage());
+            System.out.println("Could not open PIM contact list: " +
+                pime.getMessage());
         }
         
-        Contact contact = null;
-        int first = Contact.NAME_GIVEN;
-        int last = Contact.NAME_FAMILY;
-        
         // Import contact list elements into Birthday objects
+        Vector birthdays = new Vector();
+        Contact contact = null;
         while (contactItems.hasMoreElements()) {
             contact = (Contact) contactItems.nextElement();
             
-            // To make a sensible display item, the Contact needs to have both
-            // a name and a birthday
-            if (contact.countValues(Contact.BIRTHDAY) > 0 &&
-                contact.countValues(Contact.NAME) > 0) {
-                String[] names =
-                    contact.getStringArray(Contact.NAME, Contact.ATTR_NONE);
-                
-                String name =
-                    (names[first] != null ? names[first] + " " : "") +
-                    (names[last] != null ? names[last] : "");
-
-                // Only include birthdays for people that have been born
-                long birthdayMillis = contact.getDate(Contact.BIRTHDAY, 0);
-                if (birthdayMillis < NOW_MILLIS) {
-                    Date birthday = new Date(birthdayMillis);                
-                    birthdays.addElement(new Birthday(name, birthday));
-                }
+            Birthday birthday = createBirthdayFromContact(contact);
+            if (birthday != null) {
+                birthdays.addElement(birthday);
             }
         }
         
@@ -124,5 +108,29 @@ public class BirthdayManager {
         catch (Exception e) {}
         
         return birthdays;
+    }
+    
+    private Birthday createBirthdayFromContact(Contact contact) {
+        // To make a sensible display item, the Contact needs to have both
+        // a name and a birthday
+        if (contact.countValues(Contact.BIRTHDAY) < 1 ||
+            contact.countValues(Contact.NAME) < 1) {
+            return null;
+        }
+        
+        String[] names =
+            contact.getStringArray(Contact.NAME, Contact.ATTR_NONE);
+
+        String name =
+            (names[FIRST] != null ? names[FIRST] + " " : "") +
+            (names[LAST] != null ? names[LAST] : "");
+
+        // Only include birthdays for people that have been born
+        long birthdayMillis = contact.getDate(Contact.BIRTHDAY, 0);
+        if (birthdayMillis > NOW_MILLIS) {
+            return null;
+        }
+
+        return new Birthday(name, new Date(birthdayMillis));
     }
 }

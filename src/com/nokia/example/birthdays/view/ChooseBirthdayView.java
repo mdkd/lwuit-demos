@@ -11,6 +11,7 @@
 package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
+import com.nokia.example.birthdays.data.Birthday;
 import com.sun.lwuit.Calendar;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
@@ -27,24 +28,37 @@ public class ChooseBirthdayView extends Form {
     private Command backCommand;
 
     public static interface BirthdayListener {
-        public void birthdayAdded(String name, Date birthday);
+        public void birthdayAdded(Birthday birthday);
     }
 
-    public ChooseBirthdayView(final BirthdayListener birthdayListener, final BackListener backListener) {
+    public ChooseBirthdayView(final BirthdayListener birthdayListener,
+        final BackListener backListener) {
+        
         super("Add birthday");
 
+        createComponents();
+        initializeCommands(birthdayListener, backListener);
+    }
+    
+    private void createComponents() {
         calendar = new Calendar();
         addComponent(calendar);
 
         nameField = new TextField();
         nameField.setLabelForComponent(new Label("Name"));
         addComponent(nameField);
-
+        
+        clearFields();
+    }
+    
+    private void initializeCommands(final BirthdayListener birthdayListener,
+        final BackListener backListener) {
+        
         saveCommand = new Command("Save") {
             public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                Date selectedDate = calendar.getDate();
-                birthdayListener.birthdayAdded(name, selectedDate);
+                birthdayListener.birthdayAdded(
+                    new Birthday(nameField.getText(), calendar.getDate()));
+                clearFields();
             }
         };
         addCommand(saveCommand);
@@ -57,5 +71,10 @@ public class ChooseBirthdayView extends Form {
         };
         addCommand(backCommand);
         setBackCommand(backCommand);
+    }
+    
+    private void clearFields() {
+        nameField.clear();
+        calendar.setCurrentDate(new Date(0));
     }
 }

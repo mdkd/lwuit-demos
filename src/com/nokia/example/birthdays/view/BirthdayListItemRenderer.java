@@ -69,10 +69,13 @@ public class BirthdayListItemRenderer
         addComponent(BorderLayout.WEST, textContainer);
     }
 
-    public Component getListCellRendererComponent(List list, Object object, int index, boolean isSelected) {
+    public Component getListCellRendererComponent(List list, Object object,
+        int index, boolean isSelected) {
+        
         final Birthday birthday = (Birthday) object;
         
-        nameLabel.setText(birthday.getName() + " (" + birthday.getFormattedAgeOnNextBirthday() + ")");
+        nameLabel.setText( birthday.getName() + " (" +
+            birthday.getFormattedAgeOnNextBirthday() + ")");
         dateLabel.setText(birthday.getFormattedBirthDate());
         descriptionLabel.setText(birthday.getTimeUntilNextOccurrence());
         

@@ -38,11 +38,20 @@ public class BirthdaySorter {
      * 
      * @param birthdays Vector of Birthday objects
      */
-    public static void sort(Vector birthdays) {        
+    public void sort(Vector birthdays) {        
         int count = birthdays.size();
         Birthday[] workspace = new Birthday[count];
         Birthday[] target = new Birthday[count];
-        birthdays.copyInto(target);
+        
+        try {
+            birthdays.copyInto(target);
+        } catch (Exception e) {
+            System.out.println("Could not copy birthdays: " + e.getMessage());
+            for (int i = 0; i < birthdays.size(); i++) {
+                System.out.println(i + ": " + birthdays.elementAt(i));
+            }
+            return;
+        }
 
         mergeSortRecursive(target, workspace, 0, count - 1);
         
@@ -52,8 +61,6 @@ public class BirthdaySorter {
             System.out.println(i + ". " + target[i] + " (" + target[i].getTimeUntilNextOccurrence() + ")");
             birthdays.setElementAt(target[i], i);
         }
-        
-        System.out.println(birthdays.size());
     }
     
     /**
@@ -70,7 +77,7 @@ public class BirthdaySorter {
      * @param lowerBoundary Lowest index to consider
      * @param upperBoundary Highest index to consider
      */
-    private static void mergeSortRecursive(Birthday[] target,
+    private void mergeSortRecursive(Birthday[] target,
             Birthday[] workspace, int lowerBoundary, int upperBoundary) {
         // Only one item in this range, consider it sorted
         if (lowerBoundary == upperBoundary) {
@@ -90,7 +97,7 @@ public class BirthdaySorter {
         merge(target, workspace, lowerBoundary, mid + 1, upperBoundary);
     }
     
-    private static void merge(Birthday[] target, Birthday[] workspace,
+    private void merge(Birthday[] target, Birthday[] workspace,
             int lowPointer, int highPointer, int upperBoundary) {
         int i = 0;
         int lowerBoundary = lowPointer;
@@ -135,7 +142,7 @@ public class BirthdaySorter {
      * @param date2 Second date of comparison
      * @return BEFORE if date1 should appear before date2; AFTER if date1 should appear after date2, EQUAL if it makes no matter
      */
-    private static int compare(Birthday date1, Birthday date2) {        
+    private int compare(Birthday date1, Birthday date2) {        
         /*
          * Disregard the year by comparing the dates as if they belong to
          * current year: here we're only interested in the month + day.
