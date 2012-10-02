@@ -11,13 +11,18 @@ package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.BirthdayListModel;
+import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.nokia.example.birthdays.view.BirthdaysListView;
 import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ChooseBirthdayView;
 import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
+import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
+import com.sun.lwuit.Form;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.pim.ContactList;
+import javax.microedition.pim.PIM;
 
 public class BirthdayMidlet extends MIDlet {
 
@@ -43,25 +48,63 @@ public class BirthdayMidlet extends MIDlet {
     protected void startApp() throws MIDletStateChangeException {
         instance = this;
 
-        Display.init(this);
-        checkPIMAvailability();        
-        createViews();
+        Display.init(this);        
+        new Form().show();
+        
+        boolean pimAccessible = checkPIMAvailability();
+        try {            
+            createViews();
+        } catch (PIMNotAccessibleException ex) {
+            pimAccessible = false;
+        }    
+        if (!pimAccessible) {
+            System.out.println("PIM not accessible");
+            shutDownOnPIMError();
+            return;            
+        }
         
         birthDaysListView.show();
     }
     
-    private void checkPIMAvailability() {
+    private boolean checkPIMAvailability() {
         if (System.getProperty("microedition.pim.version") == null) {
-            // TODO: handle with a proper dialog
-            System.out.println("PIM API is required but not found");
-        }        
+            return false;
+        }
+        
+        ContactList contactList;
+        try {
+            contactList = (ContactList)
+                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
+            contactList.close();
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+    
+    public void shutDownOnPIMError() {
+        System.out.println("shutDownOnPIMError()");
+        try {
+            showErrorDialog("PIM API required",
+                "The PIM API is required but could not be accessed.");
+            destroyApp(true);
+            notifyDestroyed();
+        }
+        catch (MIDletStateChangeException ex) {
+            System.out.println("MIDlet state not changed: " + ex.getMessage());
+        }
     }
 
+    public void showErrorDialog(String title, String message) {
+        Dialog.show(title, message, "ok", null);
+    }
+    
     /*
      * Create application vies. The Midlet acts as a central controller,
      * changing views with the help of listeners.
      */
-    private void createViews() {
+    private void createViews() throws PIMNotAccessibleException {
         birthDaysListView = new BirthdaysListView(
             new BirthdayInsertionListener() {
                 public void birthdayInsertionRequested() {
@@ -74,10 +117,11 @@ public class BirthdayMidlet extends MIDlet {
             }
         );
 
+        final BirthdayListModel listModel = BirthdayListModel.getInstance();
         chooseBirthdayView = new ChooseBirthdayView(
             new BirthdayListener() {
                 public void birthdayAdded(Birthday birthday) {
-                    BirthdayListModel.getInstance().addItem(birthday);
+                    listModel.addItem(birthday);
                     birthDaysListView.show();
                 }
             }, new BackListener() {

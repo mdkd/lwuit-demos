@@ -15,7 +15,6 @@ import java.util.Vector;
 import javax.microedition.pim.Contact;
 import javax.microedition.pim.ContactList;
 import javax.microedition.pim.PIM;
-import javax.microedition.pim.PIMException;
 import javax.microedition.pim.PIMItem;
 
 /**
@@ -24,6 +23,12 @@ import javax.microedition.pim.PIMItem;
  * Does not care about the big picture, only relays data.
  */
 public class PIMContactHandler {
+    
+    public class PIMNotAccessibleException extends Exception {        
+        private PIMNotAccessibleException(String message) {
+            super(message);
+        }
+    }
     
     private final long NOW_MILLIS = new Date().getTime();
     private final int FIRST = Contact.NAME_GIVEN;
@@ -44,7 +49,7 @@ public class PIMContactHandler {
      * @param name Name of birthday hero
      * @param birthday Date of birth
      */
-    public void addBirthday(Birthday birthday) {
+    public void addBirthday(Birthday birthday) throws SecurityException {
         System.out.println("Adding birthday via PIM: " + birthday);
         
         ContactList contactList;
@@ -65,7 +70,7 @@ public class PIMContactHandler {
             contact.commit();
             contactList.close();
         }
-        catch (PIMException pime) {
+        catch (Exception pime) {
             System.out.println("Error saving new Contact: " + pime.getMessage());
         }
     }
@@ -75,7 +80,8 @@ public class PIMContactHandler {
      * 
      * @return Vector object of birthdays for phone contacts
      */
-    public Vector getBirthdays() {        
+    public Vector getBirthdays() throws PIMNotAccessibleException {
+        Vector birthdays = new Vector();
         ContactList contactList = null;
         Enumeration contactItems = null;
         
@@ -85,13 +91,11 @@ public class PIMContactHandler {
                 (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
             contactItems = contactList.items();
         }
-        catch (PIMException pime) {
-            System.out.println("Could not open PIM contact list: " +
-                pime.getMessage());
+        catch (Exception e) {
+            throw new PIMNotAccessibleException(e.getMessage());
         }
         
         // Import contact list elements into Birthday objects
-        Vector birthdays = new Vector();
         Contact contact = null;
         while (contactItems.hasMoreElements()) {
             contact = (Contact) contactItems.nextElement();

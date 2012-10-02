@@ -12,6 +12,7 @@ package com.nokia.example.birthdays.view;
 import com.nokia.example.birthdays.BirthdayMidlet;
 import com.nokia.example.birthdays.BirthdayMidlet.ExitListener;
 import com.nokia.example.birthdays.data.BirthdayListModel;
+import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
 import com.sun.lwuit.List;
@@ -30,7 +31,7 @@ public class BirthdaysListView extends Form {
     }
 
     public BirthdaysListView(BirthdayInsertionListener birthdayInsertionListener,
-        final ExitListener exitListener) {
+        final ExitListener exitListener) throws PIMNotAccessibleException {
         super("Birthdays");
         this.birthdayListener = birthdayInsertionListener;
         
@@ -38,7 +39,7 @@ public class BirthdaysListView extends Form {
         createList();
     }
     
-    private void createList() {        
+    private void createList() throws PIMNotAccessibleException {        
         birthdayList = new List();
         listModel = BirthdayListModel.getInstance();
         birthdayList.setModel(listModel);

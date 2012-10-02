@@ -9,6 +9,7 @@
  */
 package com.nokia.example.birthdays.view;
 
+import com.nokia.example.birthdays.BirthdayMidlet;
 import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
 import com.nokia.example.birthdays.data.Birthday;
 import com.sun.lwuit.Calendar;
@@ -25,6 +26,9 @@ public class ChooseBirthdayView extends Form {
     private TextField nameField;
     private Command saveCommand;
     private Command backCommand;
+    
+    private Label nameLabel;
+    private Label dateLabel;
 
     public static interface BirthdayListener {
         public void birthdayAdded(Birthday birthday);
@@ -40,12 +44,17 @@ public class ChooseBirthdayView extends Form {
     }
     
     private void createComponents() {
-        calendar = new Calendar();
-        addComponent(calendar);
-
+        nameLabel = new Label("Name");
         nameField = new TextField();
-        nameField.setLabelForComponent(new Label("Name"));
+        nameField.setLabelForComponent(nameLabel);
+        
+        dateLabel = new Label("Date of birth");
+        calendar = new Calendar();
+        calendar.setLabelForComponent(dateLabel);
+        addComponent(nameLabel);
         addComponent(nameField);
+        addComponent(dateLabel);
+        addComponent(calendar);
         
         clearFields();
     }
@@ -55,9 +64,7 @@ public class ChooseBirthdayView extends Form {
         
         saveCommand = new Command("Save") {
             public void actionPerformed(ActionEvent e) {
-                birthdayListener.birthdayAdded(
-                    new Birthday(nameField.getText(), calendar.getDate()));
-                clearFields();
+                validateAndSave(birthdayListener);
             }
         };
         addCommand(saveCommand);
@@ -70,6 +77,23 @@ public class ChooseBirthdayView extends Form {
         };
         addCommand(backCommand);
         setBackCommand(backCommand);
+    }
+    
+    private void validateAndSave(final BirthdayListener birthdayListener) {
+        if ("".equals(nameField.getText())) {
+            BirthdayMidlet.getInstance().showErrorDialog(
+                "Name empty", "Please enter a name.");
+            return;
+        }
+        else if (calendar.getDate().getTime() > new Date().getTime()) {
+            BirthdayMidlet.getInstance().showErrorDialog(
+                "Invalid date", "Birthday must be in the past.");
+            return;
+        }
+        
+        birthdayListener.birthdayAdded(
+            new Birthday(nameField.getText(), calendar.getDate()));
+        clearFields();
     }
     
     private void clearFields() {

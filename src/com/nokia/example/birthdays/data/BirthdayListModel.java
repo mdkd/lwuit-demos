@@ -9,6 +9,8 @@
  */
 package com.nokia.example.birthdays.data;
 
+import com.nokia.example.birthdays.BirthdayMidlet;
+import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.sun.lwuit.list.DefaultListModel;
 import com.sun.lwuit.list.ListModel;
 import java.util.Vector;
@@ -26,7 +28,7 @@ public class BirthdayListModel
     private BirthdaySorter sorter = new BirthdaySorter();
     private PIMContactHandler pimHandler;
     
-    public static BirthdayListModel getInstance() {
+    public static BirthdayListModel getInstance() throws PIMNotAccessibleException {
         if (instance == null) {
             instance = new BirthdayListModel();
         }
@@ -35,9 +37,10 @@ public class BirthdayListModel
     
     private Vector birthdays;
     
-    private BirthdayListModel() {
+    private BirthdayListModel() throws PIMNotAccessibleException {
         pimHandler = PIMContactHandler.getInstance();
         birthdays = pimHandler.getBirthdays();
+        
         System.out.println(
             "BirthdayListModel created with " + birthdays.size() + " items");
         
