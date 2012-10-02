@@ -7,7 +7,6 @@
  *
  * See LICENSE.TXT for license information.
  */
-
 package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
