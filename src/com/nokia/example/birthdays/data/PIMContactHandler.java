@@ -59,7 +59,7 @@ public class PIMContactHandler {
             Contact contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
             contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE,
-                birthday.getBirthday().getTime());
+                birthday.getDate().getTime());
             
             // Save Contact and close the PIM access
             contact.commit();

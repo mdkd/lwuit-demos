@@ -6,6 +6,7 @@ package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.Visual;
 import com.nokia.example.birthdays.data.Birthday;
+import com.nokia.example.birthdays.util.BirthdayPrettyPrinter;
 import com.sun.lwuit.Component;
 import com.sun.lwuit.Container;
 import com.sun.lwuit.Display;
@@ -75,9 +76,11 @@ public class BirthdayListItemRenderer
         final Birthday birthday = (Birthday) object;
         
         nameLabel.setText( birthday.getName() + " (" +
-            birthday.getFormattedAgeOnNextBirthday() + ")");
-        dateLabel.setText(birthday.getFormattedBirthDate());
-        descriptionLabel.setText(birthday.getTimeUntilNextOccurrence());
+            BirthdayPrettyPrinter.getFormattedAgeOnNextBirthday(birthday) + ")");
+        dateLabel.setText(
+            BirthdayPrettyPrinter.getFormattedBirthDate(birthday));
+        descriptionLabel.setText(
+            BirthdayPrettyPrinter.getTimeUntilNextOccurrence(birthday));
         
         return this;
     }

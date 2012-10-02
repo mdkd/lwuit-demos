@@ -56,9 +56,7 @@ public class BirthdaySorter {
         mergeSortRecursive(target, workspace, 0, count - 1);
         
         // Rearrange elements in the original vector
-        System.out.println("Sorted:");
         for (int i = 0; i < target.length; i++) {
-            System.out.println(i + ". " + target[i] + " (" + target[i].getTimeUntilNextOccurrence() + ")");
             birthdays.setElementAt(target[i], i);
         }
     }
@@ -147,9 +145,9 @@ public class BirthdaySorter {
          * Disregard the year by comparing the dates as if they belong to
          * current year: here we're only interested in the month + day.
          */
-        CAL1.setTime(date1.getBirthday());
+        CAL1.setTime(date1.getDate());
         CAL1.set(Calendar.YEAR, CURRENT_YEAR);
-        CAL2.setTime(date2.getBirthday());
+        CAL2.setTime(date2.getDate());
         CAL2.set(Calendar.YEAR, CURRENT_YEAR);
 
         long time1 = CAL1.getTime().getTime();

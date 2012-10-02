@@ -1,0 +1,102 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.nokia.example.birthdays.util;
+
+import com.nokia.example.birthdays.data.Birthday;
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ *
+ * @author marv
+ */
+public class BirthdayPrettyPrinter {
+    
+    public static final String[] MONTHS = { "Jan", "Feb", "Mar", "Apr", "May",
+        "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+    
+    public static final long SECONDS_IN_YEAR = 31536000;
+        
+    public static String getFormattedAgeOnNextBirthday(Birthday birthday) {
+        long secondsFromBirth =
+            (new Date().getTime() - birthday.getDate().getTime()) / 1000;
+        
+        return "" +
+            Math.max(1, (int) Math.ceil(secondsFromBirth / SECONDS_IN_YEAR));
+    }
+    
+    /**
+     * Pretty-print how long it is until the birthday,
+     * e.g. "today" or "5 days".
+     *
+     * @return Pretty-printed birthday as a String
+     */
+    public static String getTimeUntilNextOccurrence(Birthday birthday) {
+        // The time of the day doesn't matter: normalize days to around
+        // midnight to get reliable approximations on the time until birthday
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        long now = c.getTime().getTime() / 1000;
+        
+        int currentYear = c.get(Calendar.YEAR);
+        c.setTime(birthday.getDate());
+        c.set(Calendar.YEAR, currentYear);       
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 10);                
+        long then = c.getTime().getTime() / 1000;
+        
+        // If birthday already occurred this year, consider the next year
+        if (then < now) {
+            // 60 seconds * 60 minutes * 24 hours * 365 days
+            then += 31536000; 
+        }
+        
+        // Format the time difference
+        return getHumanReadableTimeUntilDate(then - now);        
+    }
+    
+    private static String getHumanReadableTimeUntilDate(long timeUntilBirthday) {
+        if (timeUntilBirthday < 86400) {
+            return "today";
+        }
+        else if (timeUntilBirthday < 172800) {
+            return "tomorrow";
+        }
+        
+        long units = 0;
+        String unit = "";
+        
+        // Less then a week -> "x days"
+        if (timeUntilBirthday < 604800) {
+            units = timeUntilBirthday / 86400;
+            unit = units + " days";            
+        }
+        // Less than a month -> "x weeks"
+        else if (timeUntilBirthday < 2592000) {
+            units = timeUntilBirthday / 604800;
+            unit = (units > 1 ? "" + units : "a") +
+                " week" + (units > 1 ? "s" : "");
+        }
+        // Less than a year -> "x months" (11 full months at most)
+        else if (timeUntilBirthday < 31536000) {
+            units = Math.min(11, timeUntilBirthday / 2592000);
+            unit = (units > 1 ? "" + units : "a") +
+                " month" + (units > 1 ? "s" : "");
+        }
+        
+        return "in " + unit;        
+    }    
+    
+    public static String getFormattedBirthDate(Birthday birthday) {        
+        Calendar c = Calendar.getInstance();
+        c.setTime(birthday.getDate());
+        
+        return
+            MONTHS[c.get(Calendar.MONTH)] + " " +
+            c.get(Calendar.DAY_OF_MONTH) + " " +
+            c.get(Calendar.YEAR);
+    }    
+}
