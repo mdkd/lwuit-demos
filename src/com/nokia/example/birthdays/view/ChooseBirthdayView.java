@@ -80,24 +80,36 @@ public class ChooseBirthdayView extends Form {
     }
     
     private void validateAndSave(final BirthdayListener birthdayListener) {
+        Date selectedDate = calendar.getDate();
         if ("".equals(nameField.getText())) {
             BirthdayMidlet.getInstance().showErrorDialog(
                 "Name empty", "Please enter a name.");
             return;
         }
-        else if (calendar.getDate().getTime() > new Date().getTime()) {
+        else if (selectedDate.getTime() > new Date().getTime()) {
             BirthdayMidlet.getInstance().showErrorDialog(
                 "Invalid date", "Birthday must be in the past.");
             return;
         }
+        
+        // Set the event to happen at around 10am
+        selectedDate = adjustTimeOfDay(selectedDate);
         
         birthdayListener.birthdayAdded(
             new Birthday(nameField.getText(), calendar.getDate()));
         clearFields();
     }
     
+    private Date adjustTimeOfDay(Date date) {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        c.setTime(date);
+        c.set(java.util.Calendar.HOUR_OF_DAY, 10);
+        
+        return c.getTime();        
+    }
+    
     private void clearFields() {
         nameField.clear();
-        calendar.setCurrentDate(new Date(0));
+        calendar.setDate(new Date(0));
     }
 }
