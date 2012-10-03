@@ -26,7 +26,7 @@ public class BirthdaysListView extends Form {
     private BirthdayInsertionListener birthdayListener;
     private BirthdayListModel listModel;
 
-    public static interface BirthdayInsertionListener {
+    public interface BirthdayInsertionListener {
         public void birthdayInsertionRequested();
     }
 
@@ -41,6 +41,7 @@ public class BirthdaysListView extends Form {
     
     private void createList() throws PIMNotAccessibleException {        
         birthdayList = new List();
+        
         listModel = BirthdayListModel.getInstance();
         birthdayList.setModel(listModel);
         birthdayList.setRenderer(new BirthdayListItemRenderer());
