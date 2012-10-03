@@ -28,7 +28,8 @@ public class BirthdayPrettyPrinter {
             (new Date().getTime() - birthday.getDate().getTime()) / 1000;
         
         return "" +
-            Math.max(1, (int) Math.ceil(secondsFromBirth / SECONDS_IN_YEAR));
+            Math.max(1, (int)
+            Math.ceil((double) secondsFromBirth / SECONDS_IN_YEAR));
     }
     
     /**
@@ -95,12 +96,16 @@ public class BirthdayPrettyPrinter {
     }    
     
     public static String getFormattedBirthDate(Birthday birthday) {        
+        return getFormattedDate(birthday.getDate());
+    }
+    
+    public static String getFormattedDate(Date date) {
         Calendar c = Calendar.getInstance();
-        c.setTime(birthday.getDate());
+        c.setTime(date);
         
         return
             MONTHS[c.get(Calendar.MONTH)] + " " +
             c.get(Calendar.DAY_OF_MONTH) + " " +
             c.get(Calendar.YEAR);
-    }    
+    }
 }
