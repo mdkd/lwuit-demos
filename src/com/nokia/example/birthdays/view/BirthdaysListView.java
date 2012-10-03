@@ -56,6 +56,7 @@ public class BirthdaysListView extends Form {
             }
         };
         addCommand(addCommand);
+        setDefaultCommand(addCommand);
 
         exitCommand = new Command("Exit") {
             public void actionPerformed(ActionEvent e) {
