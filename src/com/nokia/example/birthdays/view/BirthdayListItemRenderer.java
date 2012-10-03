@@ -30,11 +30,10 @@ public class BirthdayListItemRenderer
     
     private Label nameLabel;
     private Label dateLabel;
-    private Label descriptionLabel;
     
     public BirthdayListItemRenderer() {
         setPreferredW(Display.getInstance().getDisplayWidth());
-        setPreferredH(50);
+        setPreferredH(40);
         
         initializeStyles();
         createLayout();
@@ -42,37 +41,28 @@ public class BirthdayListItemRenderer
     
     private void initializeStyles() {
         Style style = getStyle();
-        style.setPadding(0, 0, 0, 0);
-        style.setMargin(0, 0, 0, 0);
+        style.setPadding(0, 0, 5, 5);
+        style.setMargin(5, 5, 0, 0);
     
         nameLabel = new Label();
         style = nameLabel.getStyle();
         style.setFont(Visual.MEDIUM_FONT);
+        style.setPadding(0, 0, 0, 0);
+        style.setMargin(0, 0, 0, 0);
 
         dateLabel = new Label();
         style = dateLabel.getStyle();
-        style.setFont(Visual.SMALL_BOLD_FONT);
-        
-        descriptionLabel = new Label();
-        style = descriptionLabel.getStyle();
         style.setFont(Visual.SMALL_FONT);
+        style.setPadding(0, 0, 0, 0);
+        style.setMargin(0, 0, 0, 0);
     }
     
     private void createLayout() {
-        Container dateContainer = new Container();
-        dateContainer.setLayout(new BorderLayout());
-        dateContainer.addComponent(BorderLayout.WEST, dateLabel);
-        dateContainer.addComponent(BorderLayout.EAST, descriptionLabel);
-        
-        Container textContainer = new Container();
-        textContainer.setLayout(new BorderLayout());
-        textContainer.addComponent(BorderLayout.NORTH, nameLabel);
-        textContainer.addComponent(BorderLayout.SOUTH, dateContainer);
-        
         BorderLayout borderLayout = new BorderLayout();
-        borderLayout.setCenterBehavior(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE);
         setLayout(borderLayout);
-        addComponent(BorderLayout.WEST, textContainer);
+        
+        addComponent(BorderLayout.NORTH, nameLabel);
+        addComponent(BorderLayout.SOUTH, dateLabel);
     }
 
     public Component getListCellRendererComponent(List list, Object object,
@@ -80,12 +70,14 @@ public class BirthdayListItemRenderer
         
         final Birthday birthday = (Birthday) object;
         
-        nameLabel.setText( birthday.getName() + " (" +
-            BirthdayPrettyPrinter.getFormattedAgeOnNextBirthday(birthday) + ")");
+        // Frank, 3
+        // 14 Jan 2009 (in 4 months)
+        nameLabel.setText(birthday.getName() + ", " +
+            BirthdayPrettyPrinter.getFormattedAgeOnNextBirthday(birthday));
+        
         dateLabel.setText(
-            BirthdayPrettyPrinter.getFormattedBirthDate(birthday));
-        descriptionLabel.setText(
-            BirthdayPrettyPrinter.getTimeUntilNextOccurrence(birthday));
+            BirthdayPrettyPrinter.getFormattedBirthDate(birthday) + " (" +
+            BirthdayPrettyPrinter.getTimeUntilNextOccurrence(birthday) + ")");
         
         return this;
     }
