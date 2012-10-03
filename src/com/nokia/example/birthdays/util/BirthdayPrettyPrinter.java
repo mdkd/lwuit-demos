@@ -42,14 +42,15 @@ public class BirthdayPrettyPrinter {
         // The time of the day doesn't matter: normalize days to around
         // midnight to get reliable approximations on the time until birthday
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR, 0);
+        c.setTime(new Date());
+        c.set(Calendar.HOUR_OF_DAY, 10);
         c.set(Calendar.MINUTE, 0);
         long now = c.getTime().getTime() / 1000;
         
         int currentYear = c.get(Calendar.YEAR);
         c.setTime(birthday.getDate());
         c.set(Calendar.YEAR, currentYear);       
-        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.HOUR_OF_DAY, 10);
         c.set(Calendar.MINUTE, 10);                
         long then = c.getTime().getTime() / 1000;
         
@@ -63,11 +64,11 @@ public class BirthdayPrettyPrinter {
         return getHumanReadableTimeUntilDate(then - now);        
     }
     
-    private static String getHumanReadableTimeUntilDate(long timeUntilBirthday) {
-        if (timeUntilBirthday < 86400) {
+    private static String getHumanReadableTimeUntilDate(long secondsUntilBirthday) {
+        if (secondsUntilBirthday < 86400) {
             return "today";
         }
-        else if (timeUntilBirthday < 172800) {
+        else if (secondsUntilBirthday < 172800) {
             return "tomorrow";
         }
         
@@ -75,19 +76,19 @@ public class BirthdayPrettyPrinter {
         String unit = "";
         
         // Less then a week -> "x days"
-        if (timeUntilBirthday < 604800) {
-            units = timeUntilBirthday / 86400;
+        if (secondsUntilBirthday < 604800) {
+            units = secondsUntilBirthday / 86400;
             unit = units + " days";            
         }
         // Less than a month -> "x weeks"
-        else if (timeUntilBirthday < 2592000) {
-            units = timeUntilBirthday / 604800;
+        else if (secondsUntilBirthday < 2592000) {
+            units = secondsUntilBirthday / 604800;
             unit = (units > 1 ? "" + units : "a") +
                 " week" + (units > 1 ? "s" : "");
         }
         // Less than a year -> "x months" (11 full months at most)
-        else if (timeUntilBirthday < 31536000) {
-            units = Math.min(11, timeUntilBirthday / 2592000);
+        else if (secondsUntilBirthday < 31536000) {
+            units = Math.min(11, secondsUntilBirthday / 2592000);
             unit = (units > 1 ? "" + units : "a") +
                 " month" + (units > 1 ? "s" : "");
         }

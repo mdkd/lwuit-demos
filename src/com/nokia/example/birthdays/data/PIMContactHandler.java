@@ -46,8 +46,7 @@ public class PIMContactHandler {
     /**
      * Create a Contact with birthday in the phone memory.
      * 
-     * @param name Name of birthday hero
-     * @param birthday Date of birth
+     * @param birthday Birthday object
      */
     public void addBirthday(Birthday birthday) throws SecurityException {
         System.out.println("Adding birthday via PIM: " + birthday);
