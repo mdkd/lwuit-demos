@@ -13,8 +13,11 @@ import com.nokia.example.birthdays.BirthdayMidlet;
 import com.nokia.example.birthdays.BirthdayMidlet.ExitListener;
 import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
+import com.nokia.example.birthdays.util.Commands;
+import com.nokia.example.birthdays.util.Compatibility;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
+import com.sun.lwuit.Image;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
 
@@ -50,7 +53,16 @@ public class BirthdaysListView extends Form {
     }
     
     private void addCommands() {
-        addCommand = new Command("Add") {
+        Image addCommandImage = null;        
+        if (Compatibility.isFullTouch()) {
+            System.out.println("isFullTouch");
+            addCommandImage = Commands.loadImage(Commands.ADD_COMMAND_IMAGE);
+            System.out.println("addCommandImage: " + addCommandImage);
+        } else {
+            System.out.println("not full touch");
+        }
+        
+        addCommand = new Command("Add", addCommandImage) {
             public void actionPerformed(ActionEvent e) {
                 birthdayListener.birthdayInsertionRequested();
             }
