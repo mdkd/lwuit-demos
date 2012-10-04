@@ -30,9 +30,11 @@ public class PIMContactHandler {
         }
     }
     
+    public interface ContactFilter {
+        public Object filterContact(Contact contact);
+    }        
+    
     private final long NOW_MILLIS = new Date().getTime();
-    private final int FIRST = Contact.NAME_GIVEN;
-    private final int LAST = Contact.NAME_FAMILY;
 
     private static PIMContactHandler instance;    
 
@@ -58,7 +60,7 @@ public class PIMContactHandler {
             
             String[] names =
                 new String[contactList.stringArraySize(Contact.NAME)];            
-            names[FIRST] = birthday.getName();
+            names[Contact.NAME_GIVEN] = birthday.getName();
             
             Contact contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
@@ -80,29 +82,60 @@ public class PIMContactHandler {
      * @return Vector object of birthdays for phone contacts
      */
     public Vector getBirthdays() throws PIMNotAccessibleException {
-        Vector birthdays = new Vector();
+        return getContactsWithFilter(new ContactFilter() {
+            
+            // Only get contacts with birthdays
+            public Object filterContact(Contact contact) {
+                Birthday birthday = createBirthdayFromContact(contact);
+                if (birthday == null) {
+                    return null;
+                }
+                return birthday;
+            }
+        });
+    }
+    
+    public Vector getContactsWithoutBirthday() throws PIMNotAccessibleException {
+        return getContactsWithFilter(new ContactFilter() {
+            
+            // Only include Contacts with no birthday assigned
+            public Object filterContact(Contact contact) {                
+                if (contact.countValues(Contact.BIRTHDAY) < 1) {
+                    return contact;
+                }
+                return null;
+            }
+        });
+    }    
+    
+    private Vector getContactsWithFilter(ContactFilter filter)
+        throws PIMNotAccessibleException {
+        
+        Vector contacts = new Vector();
         ContactList contactList = null;
         Enumeration contactItems = null;
         
         try {
             PIM pim = PIM.getInstance();
             contactList =
-                (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
+                (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE);
             contactItems = contactList.items();
         }
         catch (Exception e) {
             throw new PIMNotAccessibleException(e.getMessage());
         }
         
-        // Import contact list elements into Birthday objects
         Contact contact = null;
         while (contactItems.hasMoreElements()) {
             contact = (Contact) contactItems.nextElement();
             
-            Birthday birthday = createBirthdayFromContact(contact);
-            if (birthday != null) {
-                birthdays.addElement(birthday);
-            }
+            // Let the filter decide if the Contact should be included or not.
+            // If the Filter returns a non-null value, it will be added in
+            // the Vector.
+            Object filteredContact = filter.filterContact(contact);
+            if (filteredContact != null) {
+                contacts.addElement(filteredContact);
+            }            
         }
         
         try {
@@ -110,30 +143,25 @@ public class PIMContactHandler {
         }
         catch (Exception e) {}
         
-        return birthdays;
+        return contacts;        
     }
     
     private Birthday createBirthdayFromContact(Contact contact) {
         // To make a sensible display item, the Contact needs to have both
         // a name and a birthday
         if (contact.countValues(Contact.BIRTHDAY) < 1 ||
-            contact.countValues(Contact.NAME) < 1) {
+            contact.countValues(Contact.FORMATTED_NAME) < 1) {
             return null;
         }
         
-        String[] names =
-            contact.getStringArray(Contact.NAME, Contact.ATTR_NONE);
-
-        String name =
-            (names[FIRST] != null ? names[FIRST] + " " : "") +
-            (names[LAST] != null ? names[LAST] : "");
-
         // Only include birthdays for people that have been born
         long birthdayMillis = contact.getDate(Contact.BIRTHDAY, 0);
         if (birthdayMillis > NOW_MILLIS) {
             return null;
         }
 
-        return new Birthday(name, new Date(birthdayMillis));
+        return new Birthday(
+            contact.getString(Contact.FORMATTED_NAME, 0),
+            new Date(birthdayMillis));
     }
 }

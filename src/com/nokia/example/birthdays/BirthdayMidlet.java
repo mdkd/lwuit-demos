@@ -11,6 +11,7 @@ package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.BirthdayListModel;
+import com.nokia.example.birthdays.data.PIMContactHandler;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Compatibility;
 import com.nokia.example.birthdays.view.BirthdaysListView;
@@ -20,8 +21,10 @@ import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
 import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
 import com.sun.lwuit.Form;
+import java.util.Vector;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.pim.Contact;
 import javax.microedition.pim.ContactList;
 import javax.microedition.pim.PIM;
 
