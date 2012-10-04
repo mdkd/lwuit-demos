@@ -7,8 +7,11 @@
  *
  * See LICENSE.TXT for license information.
  */
-package com.nokia.example.birthdays.data;
+package com.nokia.example.birthdays.view;
 
+import com.nokia.example.birthdays.data.Birthday;
+import com.nokia.example.birthdays.data.BirthdaySorter;
+import com.nokia.example.birthdays.data.PIMContactHandler;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.sun.lwuit.list.DefaultListModel;
 import com.sun.lwuit.list.ListModel;

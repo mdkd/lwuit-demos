@@ -10,18 +10,17 @@
 package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.Birthday;
-import com.nokia.example.birthdays.data.BirthdayListModel;
-import com.nokia.example.birthdays.data.PIMContactHandler;
+import com.nokia.example.birthdays.view.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Compatibility;
-import com.nokia.example.birthdays.view.BirthdaysListView;
-import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
+import com.nokia.example.birthdays.view.BirthdayListView;
+import com.nokia.example.birthdays.view.BirthdayListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ChooseBirthdayView;
 import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
+import com.nokia.example.birthdays.view.ContactListView;
 import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
 import com.sun.lwuit.Form;
-import java.util.Vector;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.pim.Contact;
@@ -31,8 +30,9 @@ import javax.microedition.pim.PIM;
 public class BirthdayMidlet extends MIDlet {
 
     private static BirthdayMidlet instance;
-    private BirthdaysListView birthDaysListView;
-    private ChooseBirthdayView chooseBirthdayView;
+    private BirthdayListView birthDaysListView;
+    private ContactListView contactListView;
+    private ChooseBirthdayView chooseBirthdayView;    
 
     public static interface BackListener {
         public void backCommanded();
@@ -109,10 +109,10 @@ public class BirthdayMidlet extends MIDlet {
      * changing views with the help of listeners.
      */
     private void createViews() throws PIMNotAccessibleException {
-        birthDaysListView = new BirthdaysListView(
+        birthDaysListView = new BirthdayListView(
             new BirthdayInsertionListener() {
-                public void birthdayInsertionRequested() {
-                    chooseBirthdayView.show();
+                public void birthdayInsertionRequested(Contact contact) {
+                    contactListView.show();
                 }
             }, new ExitListener() {
                 public void exitCommanded() {
@@ -121,6 +121,17 @@ public class BirthdayMidlet extends MIDlet {
             }
         );
 
+        contactListView = new ContactListView(new BirthdayInsertionListener() {
+                public void birthdayInsertionRequested(Contact contact) {
+                    contactListView.show();
+                }
+            }, new BackListener() {
+                public void backCommanded() {
+                    birthDaysListView.show();
+                }
+            }
+        );
+        
         final BirthdayListModel listModel = BirthdayListModel.getInstance();
         chooseBirthdayView = new ChooseBirthdayView(
             new BirthdayListener() {

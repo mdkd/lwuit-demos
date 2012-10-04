@@ -11,7 +11,6 @@ package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet;
 import com.nokia.example.birthdays.BirthdayMidlet.ExitListener;
-import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Commands;
 import com.nokia.example.birthdays.util.Compatibility;
@@ -20,8 +19,9 @@ import com.sun.lwuit.Form;
 import com.sun.lwuit.Image;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
+import javax.microedition.pim.Contact;
 
-public class BirthdaysListView extends Form {
+public class BirthdayListView extends Form {
 
     private List birthdayList;
     private Command addCommand;
@@ -30,10 +30,10 @@ public class BirthdaysListView extends Form {
     private BirthdayListModel listModel;
 
     public interface BirthdayInsertionListener {
-        public void birthdayInsertionRequested();
+        public void birthdayInsertionRequested(Contact contact);
     }
 
-    public BirthdaysListView(BirthdayInsertionListener birthdayInsertionListener,
+    public BirthdayListView(BirthdayInsertionListener birthdayInsertionListener,
         final ExitListener exitListener) throws PIMNotAccessibleException {
         super("Birthdays");
         this.birthdayListener = birthdayInsertionListener;
@@ -64,7 +64,7 @@ public class BirthdaysListView extends Form {
         
         addCommand = new Command("Add", addCommandImage) {
             public void actionPerformed(ActionEvent e) {
-                birthdayListener.birthdayInsertionRequested();
+                birthdayListener.birthdayInsertionRequested(null);
             }
         };
         addCommand(addCommand);
