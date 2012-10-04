@@ -12,6 +12,7 @@ package com.nokia.example.birthdays;
 import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
+import com.nokia.example.birthdays.util.Compatibility;
 import com.nokia.example.birthdays.view.BirthdaysListView;
 import com.nokia.example.birthdays.view.BirthdaysListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ChooseBirthdayView;
@@ -97,7 +98,7 @@ public class BirthdayMidlet extends MIDlet {
     }
 
     public void showErrorDialog(String title, String message) {
-        Dialog.show(title, message, "ok", null);
+        Dialog.show(title, message, Compatibility.toLowerCaseIfFT("Ok"), null);
     }
     
     /*
