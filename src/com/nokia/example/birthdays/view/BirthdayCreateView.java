@@ -19,13 +19,15 @@ import com.sun.lwuit.Label;
 import com.sun.lwuit.TextField;
 import com.sun.lwuit.events.ActionEvent;
 import java.util.Date;
+import javax.microedition.pim.Contact;
 
-public class ChooseBirthdayView extends Form {
+public class BirthdayCreateView extends Form {
 
     private Calendar calendar;
     private TextField nameField;
     private Command saveCommand;
     private Command backCommand;
+    private Contact contact;
     
     private Label nameLabel;
     private Label dateLabel;
@@ -34,11 +36,12 @@ public class ChooseBirthdayView extends Form {
         public void birthdayAdded(Birthday birthday);
     }
 
-    public ChooseBirthdayView(final BirthdayListener birthdayListener,
+    public BirthdayCreateView(final Contact contact, final BirthdayListener birthdayListener,
         final BackListener backListener) {
         
         super("Add birthday");
-
+        this.contact = contact;
+        
         createComponents();
         initializeCommands(birthdayListener, backListener);
     }
@@ -48,15 +51,23 @@ public class ChooseBirthdayView extends Form {
         nameField = new TextField();
         nameField.setLabelForComponent(nameLabel);
         
+        if (contact != null) {            
+            System.out.println(contact);
+            String name = contact.getString(Contact.FORMATTED_NAME, 0);
+            System.out.println("Contact is set, populating name: " + name);
+            nameField.setText(name);
+            nameField.setEditable(false);
+        }
+        
         dateLabel = new Label("Date of birth");
         calendar = new Calendar();
         calendar.setLabelForComponent(dateLabel);
+        calendar.setDate(new Date(0));
+        
         addComponent(nameLabel);
         addComponent(nameField);
         addComponent(dateLabel);
         addComponent(calendar);
-        
-        clearFields();
     }
     
     private void initializeCommands(final BirthdayListener birthdayListener,
@@ -94,10 +105,8 @@ public class ChooseBirthdayView extends Form {
         
         // Set the event to happen at around 10am
         selectedDate = adjustTimeOfDay(selectedDate);
-        
         birthdayListener.birthdayAdded(
-            new Birthday(nameField.getText(), calendar.getDate()));
-        clearFields();
+            new Birthday(nameField.getText(), selectedDate, contact));
     }
     
     private Date adjustTimeOfDay(Date date) {
@@ -106,10 +115,5 @@ public class ChooseBirthdayView extends Form {
         c.set(java.util.Calendar.HOUR_OF_DAY, 10);
         
         return c.getTime();        
-    }
-    
-    private void clearFields() {
-        nameField.clear();
-        calendar.setDate(new Date(0));
     }
 }

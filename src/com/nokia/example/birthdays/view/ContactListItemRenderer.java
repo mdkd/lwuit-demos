@@ -10,30 +10,28 @@
 package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.Visual;
-import com.nokia.example.birthdays.data.Birthday;
-import com.nokia.example.birthdays.util.BirthdayPrettyPrinter;
 import com.sun.lwuit.Component;
 import com.sun.lwuit.Container;
 import com.sun.lwuit.Display;
 import com.sun.lwuit.Label;
 import com.sun.lwuit.List;
-import com.sun.lwuit.layouts.BorderLayout;
+import com.sun.lwuit.layouts.FlowLayout;
 import com.sun.lwuit.list.ListCellRenderer;
 import com.sun.lwuit.plaf.Style;
+import javax.microedition.pim.Contact;
 
 /**
- * A renderer for a Birthday list item.
+ * A renderer for a Contact list item.
  */
-public class BirthdayListItemRenderer
+public class ContactListItemRenderer
     extends Container
     implements ListCellRenderer {
     
-    private Label nameLabel;
-    private Label dateLabel;
+    private Label label;
     
-    public BirthdayListItemRenderer() {
+    public ContactListItemRenderer() {
         setPreferredW(Display.getInstance().getDisplayWidth());
-        setPreferredH(40);
+        setPreferredH(35);
         
         initializeStyles();
         createLayout();
@@ -44,40 +42,26 @@ public class BirthdayListItemRenderer
         style.setPadding(0, 0, 5, 5);
         style.setMargin(5, 5, 0, 0);
     
-        nameLabel = new Label();
-        style = nameLabel.getStyle();
-        style.setFont(Visual.MEDIUM_FONT);
-        style.setPadding(0, 0, 0, 0);
-        style.setMargin(0, 0, 0, 0);
-
-        dateLabel = new Label();
-        style = dateLabel.getStyle();
-        style.setFont(Visual.SMALL_FONT);
+        label = new Label();
+        label.getStyle().setFont(Visual.MEDIUM_FONT);
         style.setPadding(0, 0, 0, 0);
         style.setMargin(0, 0, 0, 0);
     }
     
     private void createLayout() {
-        BorderLayout borderLayout = new BorderLayout();
-        setLayout(borderLayout);
-        
-        addComponent(BorderLayout.NORTH, nameLabel);
-        addComponent(BorderLayout.SOUTH, dateLabel);
+        setLayout(new FlowLayout());
+        addComponent(label);
     }
 
     public Component getListCellRendererComponent(List list, Object object,
         int index, boolean isSelected) {
         
-        final Birthday birthday = (Birthday) object;
-        
-        // Frank, 3
-        // 14 Jan 2009 (in 4 months)        
-        nameLabel.setText(birthday.getName() + ", " +
-            BirthdayPrettyPrinter.getFormattedAgeOnNextBirthday(birthday));
-        
-        dateLabel.setText(
-            BirthdayPrettyPrinter.getFormattedBirthDate(birthday) + " (" +
-            BirthdayPrettyPrinter.getTimeUntilNextOccurrence(birthday) + ")");
+        String text = "Create new contact";
+        if (index > 0) {
+            text = ((Contact) object).getString(Contact.FORMATTED_NAME, Contact.ATTR_NONE);        
+            
+        }
+        label.setText(text);
         
         return this;
     }

@@ -10,13 +10,13 @@
 package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.Birthday;
-import com.nokia.example.birthdays.view.BirthdayListModel;
-import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
+import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Compatibility;
+import com.nokia.example.birthdays.view.BirthdayCreateView;
+import com.nokia.example.birthdays.view.BirthdayCreateView.BirthdayListener;
+import com.nokia.example.birthdays.view.BirthdayListModel;
 import com.nokia.example.birthdays.view.BirthdayListView;
 import com.nokia.example.birthdays.view.BirthdayListView.BirthdayInsertionListener;
-import com.nokia.example.birthdays.view.ChooseBirthdayView;
-import com.nokia.example.birthdays.view.ChooseBirthdayView.BirthdayListener;
 import com.nokia.example.birthdays.view.ContactListView;
 import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
@@ -26,13 +26,16 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.pim.Contact;
 import javax.microedition.pim.ContactList;
 import javax.microedition.pim.PIM;
+import javax.microedition.pim.PIMException;
 
 public class BirthdayMidlet extends MIDlet {
 
     private static BirthdayMidlet instance;
     private BirthdayListView birthDaysListView;
     private ContactListView contactListView;
-    private ChooseBirthdayView chooseBirthdayView;    
+    private BirthdayCreateView birthdayCreateView;
+    
+    private ContactList pimContactList;
 
     public static interface BackListener {
         public void backCommanded();
@@ -45,6 +48,10 @@ public class BirthdayMidlet extends MIDlet {
     public static BirthdayMidlet getInstance() {
         return instance;
     }
+    
+    public ContactList getPIMContactList() {
+        return pimContactList;
+    }
 
     public BirthdayMidlet() {
     }
@@ -55,35 +62,34 @@ public class BirthdayMidlet extends MIDlet {
         Display.init(this);        
         new Form().show();
         
-        boolean pimAccessible = checkPIMAvailability();
-        try {            
-            createViews();
-        } catch (PIMNotAccessibleException ex) {
-            pimAccessible = false;
-        }    
+        boolean pimAccessible = openPIMConnection();        
         if (!pimAccessible) {
             System.out.println("PIM not accessible");
             shutDownOnPIMError();
             return;            
         }
         
+        createViews();
         birthDaysListView.show();
     }
     
-    private boolean checkPIMAvailability() {
+    private boolean openPIMConnection() {
         if (System.getProperty("microedition.pim.version") == null) {
             return false;
         }
-        
-        ContactList contactList;
+            
         try {
-            contactList = (ContactList)
-                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.READ_ONLY);
-            contactList.close();
+            pimContactList = (ContactList)
+                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE);
+            return true;
         }
-        catch (Exception e) {
+        catch (PIMException ex) {
+            System.out.println("Exception: " + ex.getMessage());
             return false;
         }
+    }
+    
+    private boolean openPIMContactList() {
         return true;
     }
     
@@ -121,23 +127,29 @@ public class BirthdayMidlet extends MIDlet {
             }
         );
 
-        contactListView = new ContactListView(new BirthdayInsertionListener() {
-                public void birthdayInsertionRequested(Contact contact) {
-                    contactListView.show();
-                }
-            }, new BackListener() {
-                public void backCommanded() {
-                    birthDaysListView.show();
-                }
-            }
-        );
-        
         final BirthdayListModel listModel = BirthdayListModel.getInstance();
-        chooseBirthdayView = new ChooseBirthdayView(
-            new BirthdayListener() {
-                public void birthdayAdded(Birthday birthday) {
-                    listModel.addItem(birthday);
-                    birthDaysListView.show();
+        contactListView = new ContactListView(new BirthdayInsertionListener() {
+                public void birthdayInsertionRequested(final Contact contact) {                    
+                    
+                    birthdayCreateView = new BirthdayCreateView(
+                        contact,
+                        new BirthdayListener() {
+                            public void birthdayAdded(Birthday birthday) {
+                                try {
+                                    listModel.addItem(birthday);
+                                    birthDaysListView.show();
+                                    contactListView.refresh();
+                                } catch (PIMNotAccessibleException ex) {
+                                    showErrorDialog("Sorry", ex.getMessage());
+                                }
+                            }
+                        }, new BackListener() {
+                            public void backCommanded() {
+                                birthDaysListView.show();
+                            }
+                        }
+                    );
+                    birthdayCreateView.show();
                 }
             }, new BackListener() {
                 public void backCommanded() {
@@ -150,6 +162,14 @@ public class BirthdayMidlet extends MIDlet {
     protected void pauseApp() {
     }
 
-    protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
+    protected void destroyApp(boolean unconditional)
+        throws MIDletStateChangeException {
+        
+        if (pimContactList != null) {
+            try {
+                pimContactList.close();
+            }
+            catch (PIMException ex) {}
+        }
     }
 }

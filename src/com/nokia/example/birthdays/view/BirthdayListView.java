@@ -11,7 +11,7 @@ package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet;
 import com.nokia.example.birthdays.BirthdayMidlet.ExitListener;
-import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
+import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Commands;
 import com.nokia.example.birthdays.util.Compatibility;
 import com.sun.lwuit.Command;

@@ -11,15 +11,18 @@ package com.nokia.example.birthdays.data;
 
 import java.util.Calendar;
 import java.util.Date;
+import javax.microedition.pim.Contact;
 
 public class Birthday {
     
     private String name;
     private Calendar birthday = Calendar.getInstance();
+    private Contact contact;
 
-    public Birthday(String name, Date date) {
+    public Birthday(String name, Date date, Contact contact) {
         this.name = name;
         this.birthday.setTime(date);
+        this.contact = contact;
     }
 
     public String getName() {
@@ -28,6 +31,10 @@ public class Birthday {
 
     public Date getDate() {
         return birthday.getTime();
+    }
+    
+    public Contact getContact() {
+        return contact;
     }
 
     public String toString() {

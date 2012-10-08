@@ -10,12 +10,14 @@
 package com.nokia.example.birthdays.view;
 
 import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
-import com.nokia.example.birthdays.data.PIMContactHandler;
+import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.view.BirthdayListView.BirthdayInsertionListener;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
+import com.sun.lwuit.events.ActionListener;
+import javax.microedition.pim.Contact;
 
 public class ContactListView extends Form {
     
@@ -26,19 +28,36 @@ public class ContactListView extends Form {
     private BirthdayInsertionListener insertionListener;
     private BackListener backListener;
     
-    public ContactListView(BirthdayInsertionListener insertionListener, BackListener backListener) throws PIMContactHandler.PIMNotAccessibleException {
+    public ContactListView(BirthdayInsertionListener insertionListener,
+            BackListener backListener) throws PIMNotAccessibleException {
+        
         super("Choose contact");
         
         this.insertionListener = insertionListener;
         this.backListener = backListener;
+        
         addCommands();
         createList();
     }
     
-    private void createList() throws PIMContactHandler.PIMNotAccessibleException {
+    public void refresh() throws PIMNotAccessibleException {
+        listModel.refresh();
+    }
+    
+    private void createList() throws PIMNotAccessibleException {
         contactList = new List();
         listModel = ContactListModel.getInstance();
         contactList.setModel(listModel);
+        contactList.setRenderer(new ContactListItemRenderer());
+        contactList.setCommandList(true);
+        
+        contactList.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Contact contact = (Contact) contactList.getSelectedItem();
+                insertionListener.birthdayInsertionRequested(contact);
+            }
+        });
+        
         addComponent(contactList);
     }
     

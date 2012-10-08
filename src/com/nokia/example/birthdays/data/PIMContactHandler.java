@@ -9,12 +9,13 @@
  */
 package com.nokia.example.birthdays.data;
 
+import com.nokia.example.birthdays.BirthdayMidlet;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.microedition.pim.Contact;
 import javax.microedition.pim.ContactList;
-import javax.microedition.pim.PIM;
+import javax.microedition.pim.PIMException;
 import javax.microedition.pim.PIMItem;
 
 /**
@@ -23,12 +24,6 @@ import javax.microedition.pim.PIMItem;
  * Does not care about the big picture, only relays data.
  */
 public class PIMContactHandler {
-    
-    public class PIMNotAccessibleException extends Exception {        
-        private PIMNotAccessibleException(String message) {
-            super(message);
-        }
-    }
     
     public interface ContactFilter {
         public Object filterContact(Contact contact);
@@ -44,36 +39,33 @@ public class PIMContactHandler {
         }
         return instance;
     }
-
+    
     /**
-     * Create a Contact with birthday in the phone memory.
+     * Update or create a Contact with birthday in the phone memory.
      * 
      * @param birthday Birthday object
+     * @param contact Contact object to update, or null to create new one
      */
-    public void addBirthday(Birthday birthday) throws SecurityException {
-        System.out.println("Adding birthday via PIM: " + birthday);
+    public void addBirthday(Birthday birthday)
+        throws SecurityException, PIMException {
         
-        ContactList contactList;
-        try {
-            contactList = (ContactList)
-                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.WRITE_ONLY);
-            
-            String[] names =
-                new String[contactList.stringArraySize(Contact.NAME)];            
-            names[Contact.NAME_GIVEN] = birthday.getName();
-            
-            Contact contact = contactList.createContact();
+        ContactList contactList = BirthdayMidlet.getInstance().getPIMContactList();
+        String[] names =
+            new String[contactList.stringArraySize(Contact.NAME)];            
+        names[Contact.NAME_GIVEN] = birthday.getName();
+
+        // Create contact with a name if one doesn't exist yet
+        Contact contact = birthday.getContact();
+        if (contact == null) {
+            System.out.println("Creating new contact...");
+            contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
-            contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE,
-                birthday.getDate().getTime());
-            
-            // Save Contact and close the PIM access
-            contact.commit();
-            contactList.close();
         }
-        catch (Exception pime) {
-            System.out.println("Error saving new Contact: " + pime.getMessage());
-        }
+        contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE,
+            birthday.getDate().getTime());
+
+        // Save Contact and close the PIM access
+        contact.commit();
     }
 
     /**
@@ -112,13 +104,10 @@ public class PIMContactHandler {
         throws PIMNotAccessibleException {
         
         Vector contacts = new Vector();
-        ContactList contactList = null;
+        ContactList contactList = BirthdayMidlet.getInstance().getPIMContactList();
         Enumeration contactItems = null;
         
         try {
-            PIM pim = PIM.getInstance();
-            contactList =
-                (ContactList) pim.openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE);
             contactItems = contactList.items();
         }
         catch (Exception e) {
@@ -136,13 +125,7 @@ public class PIMContactHandler {
             if (filteredContact != null) {
                 contacts.addElement(filteredContact);
             }            
-        }
-        
-        try {
-            contactList.close();
-        }
-        catch (Exception e) {}
-        
+        }        
         return contacts;        
     }
     
@@ -162,6 +145,7 @@ public class PIMContactHandler {
 
         return new Birthday(
             contact.getString(Contact.FORMATTED_NAME, 0),
-            new Date(birthdayMillis));
+            new Date(birthdayMillis),
+            contact);
     }
 }

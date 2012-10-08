@@ -12,7 +12,7 @@ package com.nokia.example.birthdays.view;
 import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.BirthdaySorter;
 import com.nokia.example.birthdays.data.PIMContactHandler;
-import com.nokia.example.birthdays.data.PIMContactHandler.PIMNotAccessibleException;
+import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.sun.lwuit.list.DefaultListModel;
 import com.sun.lwuit.list.ListModel;
 import java.util.Vector;
@@ -49,10 +49,14 @@ public class BirthdayListModel
         sorter.sort(birthdays);
     }
     
-    public void addItem(Object o) {
+    public void addItem(Object o) throws PIMNotAccessibleException {
         Birthday birthday = (Birthday) o;
         System.out.println("BirthdayListModel received a new Birthday: " + birthday);
-        pimHandler.addBirthday(birthday);
+        try {
+            pimHandler.addBirthday(birthday);
+        } catch (Exception e) {
+            throw new PIMNotAccessibleException(e.getMessage());
+        }
         
         // TODO: figure out correct index to add at to avoid complete re-sort
         birthdays.insertElementAt(birthday, 0);
