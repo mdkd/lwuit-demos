@@ -49,7 +49,8 @@ public class PIMContactHandler {
     public void addBirthday(Birthday birthday)
         throws SecurityException, PIMException {
         
-        ContactList contactList = BirthdayMidlet.getInstance().getPIMContactList();
+        ContactList contactList =
+            BirthdayMidlet.getInstance().getPIMContactList();
         String[] names =
             new String[contactList.stringArraySize(Contact.NAME)];            
         names[Contact.NAME_GIVEN] = birthday.getName();
@@ -104,7 +105,8 @@ public class PIMContactHandler {
         throws PIMNotAccessibleException {
         
         Vector contacts = new Vector();
-        ContactList contactList = BirthdayMidlet.getInstance().getPIMContactList();
+        ContactList contactList =
+            BirthdayMidlet.getInstance().getPIMContactList();
         Enumeration contactItems = null;
         
         try {

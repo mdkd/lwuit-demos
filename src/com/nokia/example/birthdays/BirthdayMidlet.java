@@ -136,7 +136,8 @@ public class BirthdayMidlet extends MIDlet {
                                     birthDaysListView.show();
                                     contactListView.refresh();
                                 } catch (PIMNotAccessibleException ex) {
-                                    showErrorDialog("Sorry", ex.getMessage());
+                                    showErrorDialog("Sorry",
+                                        "The birthday could not be added. Please try again.");
                                 }
                             }
                         }, new BackListener() {

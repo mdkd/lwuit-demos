@@ -114,7 +114,7 @@ public final class Compatibility {
      */
     public static Font getFont(int face, int style, int size) {
 
-        //Check for custom size fonts
+        // Check for custom size fonts
         if (System.getProperty("com.nokia.mid.ui.customfontsize") != null) {
             return DirectUtils.getFont(face, style, size);
         }
@@ -156,7 +156,7 @@ public final class Compatibility {
      */
     public static Object getObjectTrait(Object target, String trait) {
         try {
-            Class.forName("com.nokia.mid.ui.LCDUIUtil"); //Try to produce the exception
+            Class.forName("com.nokia.mid.ui.LCDUIUtil"); // Try to produce the exception
 
             return LCDUIUtil.getObjectTrait(target, trait);
         }
