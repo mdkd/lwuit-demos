@@ -40,6 +40,17 @@ public class ContactListView extends Form {
         createList();
     }
     
+    public void show() {
+        // If there are no contacts without birthday, call the listener
+        // directly to signal that there is nobody available for selection
+        if (listModel.getSize() == 1) {
+            insertionListener.birthdayInsertionRequested(null);
+            return;
+        }
+        
+        super.show();
+    }
+    
     public void refresh() throws PIMNotAccessibleException {
         listModel.refresh();
     }

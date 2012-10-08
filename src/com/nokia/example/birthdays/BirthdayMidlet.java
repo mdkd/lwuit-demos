@@ -89,10 +89,6 @@ public class BirthdayMidlet extends MIDlet {
         }
     }
     
-    private boolean openPIMContactList() {
-        return true;
-    }
-    
     public void shutDownOnPIMError() {
         System.out.println("shutDownOnPIMError()");
         try {
