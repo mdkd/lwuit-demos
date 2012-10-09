@@ -9,6 +9,7 @@
  */
 package com.nokia.example.birthdays.view;
 
+import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Commands;
 import com.nokia.example.birthdays.util.Compatibility;

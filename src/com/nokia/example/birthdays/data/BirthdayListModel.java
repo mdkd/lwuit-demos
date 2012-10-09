@@ -7,7 +7,7 @@
  *
  * See LICENSE.TXT for license information.
  */
-package com.nokia.example.birthdays.view;
+package com.nokia.example.birthdays.data;
 
 import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.BirthdaySorter;

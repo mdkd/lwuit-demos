@@ -10,10 +10,10 @@
 package com.nokia.example.birthdays;
 
 import com.nokia.example.birthdays.data.Birthday;
+import com.nokia.example.birthdays.data.BirthdayListModel;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Compatibility;
 import com.nokia.example.birthdays.view.BirthdayCreateView;
-import com.nokia.example.birthdays.view.BirthdayListModel;
 import com.nokia.example.birthdays.view.BirthdayListView;
 import com.nokia.example.birthdays.view.ContactListView;
 import com.nokia.example.birthdays.view.listener.BackListener;
@@ -90,7 +90,7 @@ public class BirthdayMidlet extends MIDlet {
      * 
      * @return True if PIM is available, false otherwise
      */
-    private boolean openPIMConnection() {
+     private boolean openPIMConnection() {
         if (System.getProperty("microedition.pim.version") == null) {
             return false;
         }
