@@ -28,9 +28,13 @@ class ContactListModel
     }
     
     public Object getItemAt(int i) {
+        // The first item in the list will be 'Create new contact' pseudo-item,
+        // so return null to signal there is no Contact associated to it.
         if (i == 0) {
             return null;
-        }        
+        }
+        
+        // For following indices, return elements from the contact list normally
         return contactsWithoutBirthday.elementAt(i - 1);
     }
     
@@ -39,6 +43,6 @@ class ContactListModel
     }
     
     public void refresh() throws PIMNotAccessibleException {
-        contactsWithoutBirthday = pimHandler.getContactsWithoutBirthday();        
+        contactsWithoutBirthday = pimHandler.getContactsWithoutBirthday();
     }
 }

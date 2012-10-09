@@ -13,6 +13,10 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.microedition.pim.Contact;
 
+/**
+ * A representation of a person's birthday. Contains a reference to a
+ * PIM Contact if one is available.
+ */
 public class Birthday {
     
     private String name;

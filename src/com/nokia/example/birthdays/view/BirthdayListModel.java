@@ -26,9 +26,11 @@ public class BirthdayListModel
     implements ListModel {
     
     private static BirthdayListModel instance;
-    
     private BirthdaySorter sorter = new BirthdaySorter();
     private PIMContactHandler pimHandler;
+    
+    // The actual birthday List accessed by this ListModel
+    private Vector birthdays;
     
     public static BirthdayListModel getInstance() throws PIMNotAccessibleException {
         if (instance == null) {
@@ -37,28 +39,23 @@ public class BirthdayListModel
         return instance;
     }
     
-    private Vector birthdays;
-    
     private BirthdayListModel() throws PIMNotAccessibleException {
         pimHandler = PIMContactHandler.getInstance();
         birthdays = pimHandler.getBirthdays();
-        
-        System.out.println(
-            "BirthdayListModel created with " + birthdays.size() + " items");
-        
         sorter.sort(birthdays);
     }
     
     public void addItem(Object o) throws PIMNotAccessibleException {
         Birthday birthday = (Birthday) o;
-        System.out.println("BirthdayListModel received a new Birthday: " + birthday);
         try {
             pimHandler.addBirthday(birthday);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new PIMNotAccessibleException(e.getMessage());
         }
         
-        // TODO: figure out correct index to add at to avoid complete re-sort
+        // Add new item and re-sort. Optimal way would be to insert
+        // directly in the correct index.
         birthdays.insertElementAt(birthday, 0);
         sorter.sort(birthdays);
     }

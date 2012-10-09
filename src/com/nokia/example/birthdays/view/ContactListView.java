@@ -9,9 +9,9 @@
  */
 package com.nokia.example.birthdays.view;
 
-import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
+import com.nokia.example.birthdays.view.listener.BackListener;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
-import com.nokia.example.birthdays.view.BirthdayListView.BirthdayInsertionListener;
+import com.nokia.example.birthdays.view.listener.ContactSelectionListener;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
 import com.sun.lwuit.List;
@@ -25,10 +25,10 @@ public class ContactListView extends Form {
     private Command backCommand;
     private ContactListModel listModel;
     
-    private BirthdayInsertionListener insertionListener;
+    private ContactSelectionListener insertionListener;
     private BackListener backListener;
     
-    public ContactListView(BirthdayInsertionListener insertionListener,
+    public ContactListView(ContactSelectionListener insertionListener,
             BackListener backListener) throws PIMNotAccessibleException {
         
         super("Choose contact");
@@ -44,7 +44,7 @@ public class ContactListView extends Form {
         // If there are no contacts without birthday, call the listener
         // directly to signal that there is nobody available for selection
         if (listModel.getSize() == 1) {
-            insertionListener.birthdayInsertionRequested(null);
+            insertionListener.contactSelected(null);
             return;
         }
         
@@ -65,7 +65,7 @@ public class ContactListView extends Form {
         contactList.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 Contact contact = (Contact) contactList.getSelectedItem();
-                insertionListener.birthdayInsertionRequested(contact);
+                insertionListener.contactSelected(contact);
             }
         });
         

@@ -9,32 +9,28 @@
  */
 package com.nokia.example.birthdays.view;
 
-import com.nokia.example.birthdays.BirthdayMidlet;
-import com.nokia.example.birthdays.BirthdayMidlet.ExitListener;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Commands;
 import com.nokia.example.birthdays.util.Compatibility;
+import com.nokia.example.birthdays.view.listener.BackListener;
+import com.nokia.example.birthdays.view.listener.ContactSelectionListener;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
 import com.sun.lwuit.Image;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
-import javax.microedition.pim.Contact;
 
 public class BirthdayListView extends Form {
 
     private List birthdayList;
     private Command addCommand;
-    private Command exitCommand;
-    private BirthdayInsertionListener birthdayListener;
+    private Command backCommand;
     private BirthdayListModel listModel;
+    private ContactSelectionListener birthdayListener;
+    private BackListener backListener;
 
-    public interface BirthdayInsertionListener {
-        public void birthdayInsertionRequested(Contact contact);
-    }
-
-    public BirthdayListView(BirthdayInsertionListener birthdayInsertionListener,
-        final ExitListener exitListener) throws PIMNotAccessibleException {
+    public BirthdayListView(ContactSelectionListener birthdayInsertionListener,
+        final BackListener backListener) throws PIMNotAccessibleException {
         super("Birthdays");
         this.birthdayListener = birthdayInsertionListener;
         
@@ -64,18 +60,18 @@ public class BirthdayListView extends Form {
         
         addCommand = new Command("Add", addCommandImage) {
             public void actionPerformed(ActionEvent e) {
-                birthdayListener.birthdayInsertionRequested(null);
+                birthdayListener.contactSelected(null);
             }
         };
         addCommand(addCommand);
         setDefaultCommand(addCommand);
 
-        exitCommand = new Command("Exit") {
+        backCommand = new Command("Exit") {
             public void actionPerformed(ActionEvent e) {
-                BirthdayMidlet.getInstance().notifyDestroyed();
+                backListener.backCommanded();                
             }
         };
-        addCommand(exitCommand);
-        setBackCommand(exitCommand);        
+        addCommand(backCommand);
+        setBackCommand(backCommand);        
     }
 }

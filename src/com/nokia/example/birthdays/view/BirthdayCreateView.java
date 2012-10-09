@@ -9,8 +9,9 @@
  */
 package com.nokia.example.birthdays.view;
 
+import com.nokia.example.birthdays.view.listener.BirthdayCreationListener;
 import com.nokia.example.birthdays.BirthdayMidlet;
-import com.nokia.example.birthdays.BirthdayMidlet.BackListener;
+import com.nokia.example.birthdays.view.listener.BackListener;
 import com.nokia.example.birthdays.data.Birthday;
 import com.sun.lwuit.Calendar;
 import com.sun.lwuit.Command;
@@ -32,11 +33,8 @@ public class BirthdayCreateView extends Form {
     private Label nameLabel;
     private Label dateLabel;
 
-    public static interface BirthdayListener {
-        public void birthdayAdded(Birthday birthday);
-    }
-
-    public BirthdayCreateView(final Contact contact, final BirthdayListener birthdayListener,
+    public BirthdayCreateView(final Contact contact,
+        final BirthdayCreationListener birthdayListener,
         final BackListener backListener) {
         
         super("Add birthday");
@@ -70,7 +68,7 @@ public class BirthdayCreateView extends Form {
         addComponent(calendar);
     }
     
-    private void initializeCommands(final BirthdayListener birthdayListener,
+    private void initializeCommands(final BirthdayCreationListener birthdayListener,
         final BackListener backListener) {
         
         saveCommand = new Command("Save") {
@@ -90,7 +88,7 @@ public class BirthdayCreateView extends Form {
         setBackCommand(backCommand);
     }
     
-    private void validateAndSave(final BirthdayListener birthdayListener) {
+    private void validateAndSave(final BirthdayCreationListener birthdayListener) {
         Date selectedDate = calendar.getDate();
         if ("".equals(nameField.getText())) {
             BirthdayMidlet.getInstance().showErrorDialog(

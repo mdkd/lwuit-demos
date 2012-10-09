@@ -13,11 +13,12 @@ import com.nokia.example.birthdays.data.Birthday;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.nokia.example.birthdays.util.Compatibility;
 import com.nokia.example.birthdays.view.BirthdayCreateView;
-import com.nokia.example.birthdays.view.BirthdayCreateView.BirthdayListener;
 import com.nokia.example.birthdays.view.BirthdayListModel;
 import com.nokia.example.birthdays.view.BirthdayListView;
-import com.nokia.example.birthdays.view.BirthdayListView.BirthdayInsertionListener;
 import com.nokia.example.birthdays.view.ContactListView;
+import com.nokia.example.birthdays.view.listener.BackListener;
+import com.nokia.example.birthdays.view.listener.BirthdayCreationListener;
+import com.nokia.example.birthdays.view.listener.ContactSelectionListener;
 import com.sun.lwuit.Dialog;
 import com.sun.lwuit.Display;
 import com.sun.lwuit.Form;
@@ -31,19 +32,11 @@ import javax.microedition.pim.PIMException;
 public class BirthdayMidlet extends MIDlet {
 
     private static BirthdayMidlet instance;
-    private BirthdayListView birthDaysListView;
+    private BirthdayListView birthdaysListView;
     private ContactListView contactListView;
     private BirthdayCreateView birthdayCreateView;
     
     private ContactList pimContactList;
-
-    public static interface BackListener {
-        public void backCommanded();
-    }
-
-    public static interface ExitListener {
-        public void exitCommanded();
-    }
 
     public static BirthdayMidlet getInstance() {
         return instance;
@@ -70,7 +63,7 @@ public class BirthdayMidlet extends MIDlet {
         }
         
         createViews();
-        birthDaysListView.show();
+        birthdaysListView.show();
     }
     
     private boolean openPIMConnection() {
@@ -111,49 +104,57 @@ public class BirthdayMidlet extends MIDlet {
      * changing views with the help of listeners.
      */
     private void createViews() throws PIMNotAccessibleException {
-        birthDaysListView = new BirthdayListView(
-            new BirthdayInsertionListener() {
-                public void birthdayInsertionRequested(Contact contact) {
+        birthdaysListView = new BirthdayListView(
+            new ContactSelectionListener() {
+                public void contactSelected(Contact contact) {
                     contactListView.show();
                 }
-            }, new ExitListener() {
-                public void exitCommanded() {
-                    notifyDestroyed();
+            }, new BackListener() {
+                public void backCommanded() {
+                    try {
+                        destroyApp(true);
+                    }
+                    catch (MIDletStateChangeException ex) {}
                 }
             }
         );
 
         final BirthdayListModel listModel = BirthdayListModel.getInstance();
-        contactListView = new ContactListView(new BirthdayInsertionListener() {
-                public void birthdayInsertionRequested(final Contact contact) {                    
-                    
-                    birthdayCreateView = new BirthdayCreateView(
-                        contact,
-                        new BirthdayListener() {
-                            public void birthdayAdded(Birthday birthday) {
-                                try {
-                                    listModel.addItem(birthday);
-                                    birthDaysListView.show();
-                                    contactListView.refresh();
-                                } catch (PIMNotAccessibleException ex) {
-                                    showErrorDialog("Sorry",
-                                        "The birthday could not be added. Please try again.");
-                                }
+        
+        // Whenever a new contact is selected for editing, a new instance of
+        // BirthdayCreateView is created.
+        ContactSelectionListener listener = new ContactSelectionListener() {            
+            public void contactSelected(final Contact contact) {
+                birthdayCreateView = new BirthdayCreateView(
+                    contact,
+                    new BirthdayCreationListener() {
+                        public void birthdayAdded(Birthday birthday) {
+                            try {
+                                listModel.addItem(birthday);
+                                birthdaysListView.show();
+                                contactListView.refresh();
                             }
-                        }, new BackListener() {
-                            public void backCommanded() {
-                                birthDaysListView.show();
+                            catch (PIMNotAccessibleException ex) {
+                                showErrorDialog("Sorry",
+                                    "The birthday could not be added. " +
+                                    "Please try again.");
                             }
                         }
-                    );
-                    birthdayCreateView.show();
-                }
-            }, new BackListener() {
-                public void backCommanded() {
-                    birthDaysListView.show();
-                }
+                    }, new BackListener() {
+                        public void backCommanded() {
+                            birthdaysListView.show();
+                        }
+                    }
+                );
+                birthdayCreateView.show();
             }
-        );
+        };
+        
+        contactListView = new ContactListView(listener, new BackListener() {
+            public void backCommanded() {
+                birthdaysListView.show();
+            }
+        });
     }
 
     protected void pauseApp() {

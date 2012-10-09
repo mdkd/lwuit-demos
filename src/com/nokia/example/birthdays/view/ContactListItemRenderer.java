@@ -58,8 +58,8 @@ public class ContactListItemRenderer
         
         String text = "Create new contact";
         if (index > 0) {
-            text = ((Contact) object).getString(Contact.FORMATTED_NAME, Contact.ATTR_NONE);        
-            
+            text = ((Contact) object)
+                .getString(Contact.FORMATTED_NAME, Contact.ATTR_NONE);        
         }
         label.setText(text);
         
