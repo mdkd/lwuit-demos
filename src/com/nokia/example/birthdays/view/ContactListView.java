@@ -9,8 +9,8 @@
  */
 package com.nokia.example.birthdays.view;
 
-import com.nokia.example.birthdays.view.listener.BackListener;
 import com.nokia.example.birthdays.data.PIMNotAccessibleException;
+import com.nokia.example.birthdays.view.listener.BackListener;
 import com.nokia.example.birthdays.view.listener.ContactSelectionListener;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
@@ -73,7 +73,7 @@ public class ContactListView extends Form {
     }
     
     private void addCommands() {
-        backCommand = new Command("Exit") {
+        backCommand = new Command("Back") {
             public void actionPerformed(ActionEvent e) {
                 backListener.backCommanded();
             }
