@@ -147,6 +147,7 @@ public class BirthdayMidlet extends MIDlet {
                 public void backCommanded() {
                     try {
                         destroyApp(true);
+                        notifyDestroyed();
                     }
                     catch (MIDletStateChangeException ex) {}
                 }
@@ -196,6 +197,7 @@ public class BirthdayMidlet extends MIDlet {
 
     protected void destroyApp(boolean unconditional)
         throws MIDletStateChangeException {
+        System.out.println("destroyApp()");
         
         if (pimContactList != null) {
             try {

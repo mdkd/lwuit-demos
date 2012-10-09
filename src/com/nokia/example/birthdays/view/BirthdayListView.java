@@ -41,6 +41,7 @@ public class BirthdayListView extends Form {
         final BackListener backListener) throws PIMNotAccessibleException {
         super("Birthdays");
         this.contactListener = contactListener;
+        this.backListener = backListener;
         
         addCommands();
         createList();

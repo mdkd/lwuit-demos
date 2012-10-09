@@ -32,7 +32,9 @@ public class BirthdayListModel
     // The actual birthday List accessed by this ListModel
     private Vector birthdays;
     
-    public static BirthdayListModel getInstance() throws PIMNotAccessibleException {
+    public static BirthdayListModel getInstance()
+        throws PIMNotAccessibleException {
+        
         if (instance == null) {
             instance = new BirthdayListModel();
         }
