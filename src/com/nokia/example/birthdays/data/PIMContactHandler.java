@@ -73,6 +73,7 @@ public class PIMContactHandler {
      * Read contacts and create a Vector of Birthdays.
      * 
      * @return Vector object of birthdays for phone contacts
+     * @throws PIMNotAccessibleException 
      */
     public Vector getBirthdays() throws PIMNotAccessibleException {
         return getContactsWithFilter(new ContactFilter() {
@@ -88,6 +89,12 @@ public class PIMContactHandler {
         });
     }
     
+    /**
+     * Get a list of contacts with no assigned birthdays.
+     * 
+     * @return Vector of Contact objects
+     * @throws PIMNotAccessibleException 
+     */
     public Vector getContactsWithoutBirthday() throws PIMNotAccessibleException {
         return getContactsWithFilter(new ContactFilter() {
             
@@ -101,6 +108,15 @@ public class PIMContactHandler {
         });
     }    
     
+    /**
+     * An accessory method for getting lists of contacts from the phone
+     * contact list. The method uses a filter object to decide which object
+     * should be included in the returned list.
+     * 
+     * @param filter Filter to decide what the resulting list will contain
+     * @return A filtered list of objects
+     * @throws PIMNotAccessibleException 
+     */
     private Vector getContactsWithFilter(ContactFilter filter)
         throws PIMNotAccessibleException {
         
