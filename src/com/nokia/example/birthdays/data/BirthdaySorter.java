@@ -47,7 +47,6 @@ public class BirthdaySorter {
             birthdays.copyInto(array);
         }
         catch (Exception e) {
-            System.out.println("Could not copy birthdays: " + e.getMessage());
             return;
         }
 

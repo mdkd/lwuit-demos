@@ -76,7 +76,6 @@ public class BirthdayMidlet extends MIDlet {
         // shut down, if not
         boolean pimAccessible = openPIMConnection();        
         if (!pimAccessible) {
-            System.out.println("PIM not accessible");
             shutDownOnPIMError();
             return;            
         }
@@ -118,9 +117,7 @@ public class BirthdayMidlet extends MIDlet {
             destroyApp(true);
             notifyDestroyed();
         }
-        catch (MIDletStateChangeException ex) {
-            System.out.println("MIDlet state not changed: " + ex.getMessage());
-        }
+        catch (MIDletStateChangeException ex) {}
     }
 
     /**
@@ -197,7 +194,6 @@ public class BirthdayMidlet extends MIDlet {
 
     protected void destroyApp(boolean unconditional)
         throws MIDletStateChangeException {
-        System.out.println("destroyApp()");
         
         if (pimContactList != null) {
             try {

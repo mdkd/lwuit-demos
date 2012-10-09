@@ -58,7 +58,6 @@ public class PIMContactHandler {
         // Create contact with a name if one doesn't exist yet
         Contact contact = birthday.getContact();
         if (contact == null) {
-            System.out.println("Creating new contact...");
             contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
         }

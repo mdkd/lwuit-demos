@@ -55,7 +55,6 @@ public class BirthdayCreateView extends Form {
         
         // If a contact has been assigned, use it to populate the name field
         if (contact != null) {            
-            System.out.println(contact);
             String name = contact.getString(Contact.FORMATTED_NAME, 0);
             nameField.setText(name);
             nameField.setEditable(false);
