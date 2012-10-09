@@ -19,6 +19,9 @@ import com.sun.lwuit.events.ActionEvent;
 import com.sun.lwuit.events.ActionListener;
 import javax.microedition.pim.Contact;
 
+/**
+ * The view used to choose the Contact for editing.
+ */
 public class ContactListView extends Form {
     
     private List contactList;
@@ -62,6 +65,7 @@ public class ContactListView extends Form {
         contactList.setRenderer(new ContactListItemRenderer());
         contactList.setCommandList(true);
         
+        // When a Contact has been selected, notify the insertionListener
         contactList.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 Contact contact = (Contact) contactList.getSelectedItem();

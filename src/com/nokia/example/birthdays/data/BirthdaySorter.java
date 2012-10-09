@@ -59,7 +59,7 @@ public class BirthdaySorter {
     }
 
     /**
-     * Quicksort algorithm adapter from an adaptation of James Gosling's 1995
+     * Quicksort algorithm based on an adaptation of James Gosling's 1995
      * demo code.
      *
      * See http://code.google.com/p/oppositelock/source/browse/jsr/trunk/src/numfum/j2me/util/QuickSort.java?r=2
@@ -76,9 +76,8 @@ public class BirthdaySorter {
         }
 
         Birthday swapped;
-        /*
-         *  Special case for two elements.
-         */
+        
+        // Special case for two elements.
         if (lo == hi - 1) {
             if (compare(array[lo], array[hi]) > 0) {
                 swapped = array[lo];
@@ -94,17 +93,14 @@ public class BirthdaySorter {
         array[hi] = pivot;
 
         while (lo < hi) {
-            /*
-             *  Search forward from array[lo] until an element is found that
-             *  is greater than the pivot or lo >= hi.
-             */
+            // Search forward from array[lo] until an element is found that
+            // is greater than the pivot or lo >= hi.
             while (compare(array[lo], pivot) <= 0 && lo < hi) {
                 lo++;
             }
-            /*
-             *  Search backward from array[hi] until element is found that is
-             *  less than the pivot, or lo >= hi.
-             */
+            
+            // Search backward from array[hi] until element is found that is
+            // less than the pivot, or lo >= hi.
             while (compare(pivot, array[hi]) <= 0 && lo < hi) {
                 hi--;
             }
@@ -116,16 +112,14 @@ public class BirthdaySorter {
                 array[hi] = swapped;
             }
         }
-        /*
-         *  Put the median in the 'centre' of the list.
-         */
+        
+        // Put the median in the 'centre' of the list.
         array[_hi] = array[hi];
         array[ hi] = pivot;
-        /*
-         *  Recursive calls, elements array[_lo] to array[lo - 1] are less
-         *  than or equal to pivot, elements array[hi + 1] to array[_hi] are
-         *  greater than pivot.
-         */
+        
+        // Recursive calls, elements array[_lo] to array[lo - 1] are less
+        // than or equal to pivot, elements array[hi + 1] to array[_hi] are
+        // greater than pivot.
         sort(array, _lo, lo - 1);
         sort(array, hi + 1, _hi);
     }
@@ -133,12 +127,16 @@ public class BirthdaySorter {
     /**
      * Compare a birth date to another, considering the current time of year.
      *
-     * Suppose it's now the 1st of August: 1 2 3 4 5 6 7 8 9 10 11 12 ^ For
-     * showing the upcoming birthdays list, we need to consider whether the
+     * Suppose it's now the 1st of August:
+     * 1 2 3 4 5 6 7 8 9 10 11 12
+     *               ^
+     * 
+     * For showing the upcoming birthdays list, we need to consider whether the
      * dates compared have already happened this year or not.
      *
      * This means that if people had birthdays each month, their display order,
-     * as viewed on August 1st, would be: 8 9 10 11 12 1 2 3 4 5 6 7
+     * as viewed on August 1st, would be:
+     * 8 9 10 11 12 1 2 3 4 5 6 7
      *
      * @param date1 First date of comparison
      * @param date2 Second date of comparison
@@ -155,7 +153,7 @@ public class BirthdaySorter {
         CAL2.setTime(date2.getDate());
         CAL2.set(Calendar.YEAR, CURRENT_YEAR);
 
-        /**
+        /*
          * Because we're not interested in time of the day, today's birthdays
          * easily get mistreated as having already happened unless we consider
          * them individually. If there are multiple birthdays on the same day,
@@ -163,7 +161,8 @@ public class BirthdaySorter {
          */
         if (isToday(CAL1)) {
             return BEFORE;
-        } else if (isToday(CAL2)) {
+        }
+        else if (isToday(CAL2)) {
             return AFTER;
         }        
         
@@ -177,7 +176,8 @@ public class BirthdaySorter {
         if (time1 < NOW_MILLIS && time2 > NOW_MILLIS) {
             // time1 has also happened this year, needs to go after time2
             return AFTER;
-        } else if (time1 > NOW_MILLIS && time2 < NOW_MILLIS) {
+        }
+        else if (time1 > NOW_MILLIS && time2 < NOW_MILLIS) {
             return BEFORE;
         }
 

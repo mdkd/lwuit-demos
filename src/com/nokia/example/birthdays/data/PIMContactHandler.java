@@ -62,6 +62,7 @@ public class PIMContactHandler {
             contact = contactList.createContact();
             contact.addStringArray(Contact.NAME, PIMItem.ATTR_NONE, names);
         }
+        
         contact.addDate(Contact.BIRTHDAY, PIMItem.ATTR_NONE,
             birthday.getDate().getTime());
 

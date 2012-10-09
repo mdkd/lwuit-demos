@@ -12,7 +12,7 @@ package com.nokia.example.birthdays.view.listener;
 import com.nokia.example.birthdays.data.Birthday;
 
 /**
- *
+ * Listener interface to signal a birthday has been created.
  */
 public interface BirthdayCreationListener {
     public void birthdayAdded(Birthday birthday);

@@ -10,8 +10,8 @@
 package com.nokia.example.birthdays.view.listener;
 
 /**
- *
-  */
+ * Listener interface to signal a Back command was requested.
+ */
 public interface BackListener {
 
     public void backCommanded();

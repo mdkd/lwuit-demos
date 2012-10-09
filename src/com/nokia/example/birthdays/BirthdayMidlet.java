@@ -29,32 +29,51 @@ import javax.microedition.pim.ContactList;
 import javax.microedition.pim.PIM;
 import javax.microedition.pim.PIMException;
 
+/**
+ * Main application MIDlet. Takes care of the application life cycle and
+ * handles transitions between views with listeners.
+ */
 public class BirthdayMidlet extends MIDlet {
 
     private static BirthdayMidlet instance;
+    
     private BirthdayListView birthdaysListView;
     private ContactListView contactListView;
     private BirthdayCreateView birthdayCreateView;
     
     private ContactList pimContactList;
 
+    /**
+     * Singleton - return the MIDlet instance.
+     * 
+     * @return Instance of the running MIDlet.
+     */
     public static BirthdayMidlet getInstance() {
         return instance;
     }
     
+    /**
+     * Get the PIM ContactList used to read and write Contacts from the phone.
+     * Centrally accessed via the main midlet to minimize open/close calls.
+     * 
+     * @return PIM ContactList instance
+     */
     public ContactList getPIMContactList() {
         return pimContactList;
     }
 
-    public BirthdayMidlet() {
-    }
+    public BirthdayMidlet() {}
 
     protected void startApp() throws MIDletStateChangeException {
         instance = this;
-
+        
+        // Initialize the Display and set an empty form to enable showing
+        // a Dialog on top of it, if needed
         Display.init(this);        
         new Form().show();
         
+        // Make sure the PIM API (phone contacts) are accessible and
+        // shut down, if not
         boolean pimAccessible = openPIMConnection();        
         if (!pimAccessible) {
             System.out.println("PIM not accessible");
@@ -62,10 +81,16 @@ public class BirthdayMidlet extends MIDlet {
             return;            
         }
         
+        // Create application views and show the birthday list view
         createViews();
         birthdaysListView.show();
     }
     
+    /**
+     * Validate and open the PIM API connection.
+     * 
+     * @return True if PIM is available, false otherwise
+     */
     private boolean openPIMConnection() {
         if (System.getProperty("microedition.pim.version") == null) {
             return false;
@@ -82,8 +107,11 @@ public class BirthdayMidlet extends MIDlet {
         }
     }
     
+    /**
+     * Show an error message and shut down the application
+     * in case the PIM API can't be accessed.
+     */
     public void shutDownOnPIMError() {
-        System.out.println("shutDownOnPIMError()");
         try {
             showErrorDialog("PIM API required",
                 "The PIM API is required but could not be accessed.");
@@ -95,15 +123,21 @@ public class BirthdayMidlet extends MIDlet {
         }
     }
 
+    /**
+     * Show an error dialog.
+     * 
+     * @param title Dialog title
+     * @param message Dialog text
+     */
     public void showErrorDialog(String title, String message) {
         Dialog.show(title, message, Compatibility.toLowerCaseIfFT("Ok"), null);
     }
     
-    /*
-     * Create application vies. The Midlet acts as a central controller,
-     * changing views with the help of listeners.
+    /**
+     * Create application views. 
      */
     private void createViews() throws PIMNotAccessibleException {
+        // The view that displays the list of upcoming birthdays
         birthdaysListView = new BirthdayListView(
             new ContactSelectionListener() {
                 public void contactSelected(Contact contact) {

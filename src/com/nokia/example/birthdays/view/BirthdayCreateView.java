@@ -9,10 +9,10 @@
  */
 package com.nokia.example.birthdays.view;
 
-import com.nokia.example.birthdays.view.listener.BirthdayCreationListener;
 import com.nokia.example.birthdays.BirthdayMidlet;
-import com.nokia.example.birthdays.view.listener.BackListener;
 import com.nokia.example.birthdays.data.Birthday;
+import com.nokia.example.birthdays.view.listener.BackListener;
+import com.nokia.example.birthdays.view.listener.BirthdayCreationListener;
 import com.sun.lwuit.Calendar;
 import com.sun.lwuit.Command;
 import com.sun.lwuit.Form;
@@ -22,16 +22,20 @@ import com.sun.lwuit.events.ActionEvent;
 import java.util.Date;
 import javax.microedition.pim.Contact;
 
+/**
+ * View for creating a new birthday. Can be used to create either a new contact
+ * or just add a birthday for an existing one.
+ */
 public class BirthdayCreateView extends Form {
 
-    private Calendar calendar;
-    private TextField nameField;
+    private Contact contact;
     private Command saveCommand;
     private Command backCommand;
-    private Contact contact;
     
     private Label nameLabel;
     private Label dateLabel;
+    private Calendar calendar;
+    private TextField nameField;
 
     public BirthdayCreateView(final Contact contact,
         final BirthdayCreationListener birthdayListener,
@@ -49,10 +53,10 @@ public class BirthdayCreateView extends Form {
         nameField = new TextField();
         nameField.setLabelForComponent(nameLabel);
         
+        // If a contact has been assigned, use it to populate the name field
         if (contact != null) {            
             System.out.println(contact);
             String name = contact.getString(Contact.FORMATTED_NAME, 0);
-            System.out.println("Contact is set, populating name: " + name);
             nameField.setText(name);
             nameField.setEditable(false);
         }
@@ -68,9 +72,11 @@ public class BirthdayCreateView extends Form {
         addComponent(calendar);
     }
     
-    private void initializeCommands(final BirthdayCreationListener birthdayListener,
+    private void initializeCommands(
+        final BirthdayCreationListener birthdayListener,
         final BackListener backListener) {
         
+        // 'Save' validates the created object and notifies the listener 
         saveCommand = new Command("Save") {
             public void actionPerformed(ActionEvent e) {
                 validateAndSave(birthdayListener);
@@ -79,6 +85,7 @@ public class BirthdayCreateView extends Form {
         addCommand(saveCommand);
         setDefaultCommand(saveCommand);
 
+        // 'Back' notifies the backListener
         backCommand = new Command("Back") {
             public void actionPerformed(ActionEvent e) {
                 backListener.backCommanded();

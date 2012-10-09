@@ -20,19 +20,27 @@ import com.sun.lwuit.Image;
 import com.sun.lwuit.List;
 import com.sun.lwuit.events.ActionEvent;
 
+/*
+ * View that displays a list of upcoming birthdays, and allows creating
+ * a new birthday entry.
+ * 
+ * This view is intentionally very thing. The core logic for handling
+ * retrieval and addition of contacts is contained in the BirthdayListModel.
+ */
 public class BirthdayListView extends Form {
 
-    private List birthdayList;
     private Command addCommand;
     private Command backCommand;
+    
+    private List birthdayList;
     private BirthdayListModel listModel;
-    private ContactSelectionListener birthdayListener;
+    private ContactSelectionListener contactListener;
     private BackListener backListener;
 
-    public BirthdayListView(ContactSelectionListener birthdayInsertionListener,
+    public BirthdayListView(ContactSelectionListener contactListener,
         final BackListener backListener) throws PIMNotAccessibleException {
         super("Birthdays");
-        this.birthdayListener = birthdayInsertionListener;
+        this.contactListener = contactListener;
         
         addCommands();
         createList();
@@ -49,18 +57,15 @@ public class BirthdayListView extends Form {
     }
     
     private void addCommands() {
-        Image addCommandImage = null;        
+        // When running on a full touch device, add the command icon
+        Image addCommandImage = null;
         if (Compatibility.isFullTouch()) {
-            System.out.println("isFullTouch");
             addCommandImage = Commands.loadImage(Commands.ADD_COMMAND_IMAGE);
-            System.out.println("addCommandImage: " + addCommandImage);
-        } else {
-            System.out.println("not full touch");
         }
         
         addCommand = new Command("Add", addCommandImage) {
             public void actionPerformed(ActionEvent e) {
-                birthdayListener.contactSelected(null);
+                contactListener.contactSelected(null);
             }
         };
         addCommand(addCommand);

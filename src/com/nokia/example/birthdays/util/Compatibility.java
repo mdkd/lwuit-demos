@@ -45,8 +45,8 @@ public final class Compatibility {
      * @param int icon
      * @return Command
      */
-    public static Command getCommand(String label,
-        int type, int priority, int icon) {
+    public static Command getCommand(String label, int type, int priority,
+        int icon) {
 
         try {
             Class.forName("com.nokia.mid.ui.IconCommand"); //Try to produce the exception
@@ -73,8 +73,7 @@ public final class Compatibility {
      * @return Command
      */
     public static Command getCommand(Image selected, Image unselected,
-        String label,
-        int type, int priority) {
+        String label, int type, int priority) {
 
         try {
             Class.forName("com.nokia.mid.ui.IconCommand"); //Try to produce the exception
