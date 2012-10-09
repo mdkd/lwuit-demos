@@ -101,8 +101,8 @@ public class BirthdayMidlet extends MIDlet {
                 PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE);
             return true;
         }
-        catch (PIMException ex) {
-            System.out.println("Exception: " + ex.getMessage());
+        // Catch both PIMException and SecurityException
+        catch (Exception ex) {
             return false;
         }
     }
