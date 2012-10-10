@@ -9,10 +9,6 @@
  */
 package com.nokia.example.birthdays.data;
 
-import com.nokia.example.birthdays.data.Birthday;
-import com.nokia.example.birthdays.data.BirthdaySorter;
-import com.nokia.example.birthdays.data.PIMContactHandler;
-import com.nokia.example.birthdays.data.PIMNotAccessibleException;
 import com.sun.lwuit.list.DefaultListModel;
 import com.sun.lwuit.list.ListModel;
 import java.util.Vector;
@@ -63,10 +59,13 @@ public class BirthdayListModel
     }
     
     public Object getItemAt(int i) {
+        if (birthdays.size() < i + 1) {
+            return null;
+        }
         return birthdays.elementAt(i);
     }
 
     public int getSize() {
-        return birthdays.size();
+        return Math.max(1, birthdays.size());
     }
 }

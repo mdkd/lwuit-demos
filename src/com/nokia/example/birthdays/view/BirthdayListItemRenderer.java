@@ -70,6 +70,15 @@ public class BirthdayListItemRenderer
         
         final Birthday birthday = (Birthday) object;
         
+        // A null component at index 0 is used to signal that the list is
+        // empty. While this *can* be done with list.setHint(text), in this
+        // case we'll customize the item to appear nicer.
+        if (birthday == null) {
+            nameLabel.setText("No birthdays to show");
+            dateLabel.setText("Why not add one?");
+            return this;
+        }
+        
         // Frank, 3
         // 14 Jan 2009 (in 4 months)        
         nameLabel.setText(birthday.getName() + ", " +
