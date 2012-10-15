@@ -36,6 +36,7 @@ public class BirthdayCreateView extends Form {
     private Label dateLabel;
     private Calendar calendar;
     private TextField nameField;
+    
 
     public BirthdayCreateView(final Contact contact,
         final BirthdayCreationListener birthdayListener,
@@ -58,7 +59,12 @@ public class BirthdayCreateView extends Form {
             String name = contact.getString(Contact.FORMATTED_NAME, 0);
             nameField.setText(name);
             nameField.setEditable(false);
-        }
+            
+            // Make the TextField appear as a Label, to avoid branching
+            // in code but still make it clear to the user that the field
+            // is not editable.
+            nameField.setUIID("label");
+        }        
         
         dateLabel = new Label("Date of birth");
         calendar = new Calendar();
