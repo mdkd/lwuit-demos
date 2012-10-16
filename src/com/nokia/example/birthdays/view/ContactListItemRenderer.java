@@ -28,6 +28,7 @@ public class ContactListItemRenderer
     implements ListCellRenderer {
     
     private Label label;
+    private Label focusComponent;
     
     public ContactListItemRenderer() {
         setPreferredW(Display.getInstance().getDisplayWidth());
@@ -44,6 +45,8 @@ public class ContactListItemRenderer
     
         label = new Label();
         label.getStyle().setFont(Visual.MEDIUM_FONT);
+        label.getStyle().setBgTransparency(0);
+
         style.setPadding(0, 0, 0, 0);
         style.setMargin(0, 0, 0, 0);
     }
@@ -56,6 +59,13 @@ public class ContactListItemRenderer
     public Component getListCellRendererComponent(List list, Object object,
         int index, boolean isSelected) {
         
+        // Make sure selection is properly drawn also in non-touch devices
+        // (not needed for full touch)
+        if (!Display.getInstance().shouldRenderSelection(list)) {
+            isSelected = false;
+        }
+        setFocus(isSelected);
+        
         String text = "Create new contact";
         if (index > 0) {
             text = ((Contact) object)
@@ -67,6 +77,12 @@ public class ContactListItemRenderer
     }
 
     public Component getListFocusComponent(List list) {
-        return null;
+        if (focusComponent == null) {
+            focusComponent = new Label("");
+            focusComponent.setUIID("ListRendererFocus");
+            focusComponent.setFocus(true);
+            focusComponent.setCellRenderer(true);
+        }
+        return focusComponent;
     }
 }
