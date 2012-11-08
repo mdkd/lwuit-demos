@@ -31,9 +31,6 @@ public final class Compatibility {
 
     private static Boolean nonTouch = null;
 
-    public void Compatibility() {
-    }
-
     /**
      * This method returns either a Command object or a IconCommand object. The
      * result is cast as a Command in either case to avoid crashing the VM on
