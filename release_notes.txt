@@ -6,10 +6,10 @@ component together with the Java ME PIM API (JSR-75) to create a simple
 Birthdays application.
 
 This example application is hosted in Nokia Developer Projects:
-- http://projects.developer.nokia.com/LWUIT_Birthdays
+- https://projects.developer.nokia.com/LWUIT_Birthdays
 
 For more information on implementation and porting, visit the wiki pages:
-- http://projects.developer.nokia.com/LWUIT_Birthdays/wiki
+- https://projects.developer.nokia.com/LWUIT_Birthdays/wiki
 
 
 1. Usage
@@ -40,9 +40,10 @@ PIMContactHandler.java: accessing PIM APIs
 4. Compatibility
 -------------------------------------------------------------------------------
 
-Series 40 phones with touch capabilities, e.g. Nokia Asha 311 or Nokia X3-02.
+Nokia Asha software platform 1.0 and Series 40 phones with touch capabilities,
+e.g. Nokia Asha 501, Nokia Asha 311 or Nokia X3-02.
 
-Developed with Netbeans 7.2 and Nokia SDK 2.0 for Java.
+Developed with Nokia Asha SDK 1.0 and Netbeans 7.2.
 
 4.1 Required capabilities
 -------------------------
@@ -62,7 +63,7 @@ CLDC 1.1, MIDP 2.0, and PIM API (JSR-75).
 5.1 Preparations
 ----------------
 
-Before opening the project, make sure Nokia SDK 2.0 for Java is installed and 
+Before opening the project, make sure Nokia Asha SDK 1.0 is installed and 
 added to NetBeans.
 
 5.2 Building
