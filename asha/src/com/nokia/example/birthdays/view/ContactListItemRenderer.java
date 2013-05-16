@@ -67,8 +67,15 @@ public class ContactListItemRenderer
         
         String text = "Create new contact";
         if (index > 0) {
-            text = ((Contact) object)
-                .getString(Contact.FORMATTED_NAME, Contact.ATTR_NONE);        
+            // Create formatted name for existing contact
+            String[] name = ((Contact) object)
+                .getStringArray(Contact.NAME, Contact.ATTR_NONE);
+            text = "";
+            for (int i = 0; i < name.length; i++) {
+                if (name[i] != null) {
+                    text += name[i] + " ";
+                }
+            }
         }
         label.setText(text);
         
