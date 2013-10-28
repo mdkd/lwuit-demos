@@ -81,7 +81,8 @@ via Nokia Suite or over Bluetooth.
 -------------------------------------------------------------------------------
 
 See the license text file delivered with this project. The license file is also
-available online at https://github.com/nokia-developer/lwuit-demos/category-bar-demo/LICENSE.TXT
+available online at 
+https://github.com/nokia-developer/lwuit-demos/blob/master/category-bar-demo/LICENSE.TXT
 
 
 7. Related documentation
