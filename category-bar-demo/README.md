@@ -98,4 +98,4 @@ Nokia SDK for Java
 8. Version history
 -------------------------------------------------------------------------------
 
-* 1.0 Initial release in Nokia Developer projects.
+* 1.0 Initial release.
