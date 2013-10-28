@@ -1,0 +1,9 @@
+MIDlet-1: Category Bar Demo,/app_icon_asha.png,com.nokia.example.categorybardemo.DemoMidlet
+MIDlet-Jar-Size: 1086955
+MIDlet-Jar-URL: LwuitCategoryBarDemo.jar
+MIDlet-Name: LwuitCategoryBarDemo
+MIDlet-Vendor: Nokia
+MIDlet-Version: 1.0
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
+Nokia-MIDlet-App-Orientation: manual
