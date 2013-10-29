@@ -124,18 +124,16 @@ The application can also be run with Eclipse.
 
 See the license text file delivered with this project. The license file is 
 also available online at 
-https://projects.developer.nokia.com/LWUIT_ListDemo/browser/lwuit_listdemo/LICENSE.TXT
+https://github.com/nokia-developer/lwuit-demos/blob/master/LICENSE.TXT
 
 
 7. Related documentation
 -------------------------------------------------------------------------------
-
-List Demo
-* https://projects.developer.nokia.com/LWUIT_ListDemo/wiki
-
 Nokia SDK for Java
 * http://www.developer.nokia.com/Develop/Java/Tools/
 
+Java Developer's Library
+* http://developer.nokia.com/Resources/Library/Java/#!index.html
 
 8. Version history
 -------------------------------------------------------------------------------
