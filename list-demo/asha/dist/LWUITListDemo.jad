@@ -1,0 +1,9 @@
+MIDlet-1: List Demo,/app_icon_asha.png,com.nokia.example.listdemo.DemoMidlet
+MIDlet-Jar-Size: 1092462
+MIDlet-Jar-URL: LwuitListDemo.jar
+MIDlet-Name: LwuitListDemo
+MIDlet-Vendor: Nokia
+MIDlet-Version: 0.3
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
+Nokia-MIDlet-App-Orientation: manual
