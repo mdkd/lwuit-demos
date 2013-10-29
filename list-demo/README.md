@@ -111,7 +111,7 @@ and selecting the application.
 
 Before opening the project, make sure the Nokia SDK 2.0 is installed and added 
 to NetBeans. Ensure that LWUIT for Series 40 library is added in the Libraries 
-section. Building is done by selecting 'Build main project'.
+section. Building is done by selecting **Build main project**.
 
 Installing the application on a phone can be done by transferring the JAR file 
 via Nokia Ovi Suite or via Bluetooth.
