@@ -6,7 +6,7 @@ software platform and Series 40 phones created with LWUIT library. It shows
 developers how to use different types of gestures in LWUIT applications.
 Additionally it demonstrates transitions, drag & drop and image scaling.
 
-The application is hosted in Nokia Developer Projects:
+The application is hosted in GitHub:
 https://github.com/nokia-developer/lwuit-demos/tree/master/gestures-demo
 
 
