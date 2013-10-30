@@ -1,0 +1,8 @@
+MIDlet-Version: 1.0
+MIDlet-Vendor: Nokia
+MIDlet-Jar-URL: LwuitGesturesDemo.jar
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-1: GesturesDemo,/appicon.png,com.nokia.example.gesturesdemo.GesturesDemo
+MicroEdition-Profile: MIDP-2.0
+MIDlet-Jar-Size: 806205
+MIDlet-Name: LwuitGesturesDemo
