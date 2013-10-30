@@ -7,10 +7,7 @@ developers how to use different types of gestures in LWUIT applications.
 Additionally it demonstrates transitions, drag & drop and image scaling.
 
 The application is hosted in Nokia Developer Projects:
-https://projects.developer.nokia.com/LWUIT_GesturesDemo
-
-For more information on the implementation, visit the wiki page: 
-https://projects.developer.nokia.com/LWUIT_GesturesDemo/wiki
+https://github.com/nokia-developer/lwuit-demos/tree/master/gestures-demo
 
 
 1. Usage
@@ -21,34 +18,34 @@ arranging images, and image view for viewing, zooming and panning images.
 
 Grid view:
 
-- Tap an image to view it in image viewer.
-- Long tap the screen to enter edit mode where images can be repositioned by
-dragging.
+* Tap an image to view it in image viewer.
+* Long tap the screen to enter edit mode where images can be repositioned by
+  dragging.
 
 Image view:
 
-- Pinch the image to zoom in/out.
-- Drag the zoomed image to pan it horizontally or vertically.
-- Double-tapping the image zooms to minimum or maximum level depending on the
-current zoom level.
-- Flick gesture switches to next or previous image depending on the flick
-direction.
+* Pinch the image to zoom in/out.
+* Drag the zoomed image to pan it horizontally or vertically.
+* Double-tapping the image zooms to minimum or maximum level depending on the
+  current zoom level.
+* Flick gesture switches to next or previous image depending on the flick
+  direction.
 
 
 2. Prerequisites
 -------------------------------------------------------------------------------
 
-Java ME basics
-LWUIT basics
+* Java ME basics
+* LWUIT basics
 
 
 3. Important classes
 -------------------------------------------------------------------------------
 
-GesturesDemo:  The midlet class that initialises the display and starts the
-application.
-ImageGrid: Displays a grid of images.
-ImageView: Displays an image.
+* `GesturesDemo`:  The midlet class that initialises the display and starts the
+  application.
+* `ImageGrid`: Displays a grid of images.
+* `ImageView`: Displays an image.
 
 
 3.1 Design considerations
@@ -94,8 +91,8 @@ CLDC 1.1, MIDP 2.0
 4.2 Known issues
 ----------------
 
-- Fast scrolling or zooming may cause an occasional OutOfMemoryException.
-- Color and layout issues in touch and type devices.
+* Fast scrolling or zooming may cause an occasional OutOfMemoryException.
+* Color and layout issues in touch and type devices.
 
 
 5. Building, installing, and running the application
@@ -118,20 +115,19 @@ via Nokia Ovi Suite or via Bluetooth.
 
 See the license text file delivered with this project. The license file is 
 also available online at 
-https://projects.developer.nokia.com/LWUIT_GesturesDemo/browser/lwuit_gesturesdemo/LICENSE.TXT
+https://github.com/nokia-developer/lwuit-demos/blob/master/LICENSE.TXT
 
 
 7. Related documentation
 -------------------------------------------------------------------------------
 
-LWUIT Gestures Demo
-- https://projects.developer.nokia.com/LWUIT_GesturesDemo/wiki
+LWUIT Developer's Library
+* http://developer.nokia.com/Resources/Library/LWUIT/#!index.html
 
 Nokia SDK for Java
-- http://www.developer.nokia.com/Develop/Java/Tools/
+* http://www.developer.nokia.com/Develop/Java/Tools/
 
 
 8. Version history
 -------------------------------------------------------------------------------
-
-v1.0    First release (at Nokia Developer projects only).
+* 1.0    First release (at Nokia Developer projects only).
