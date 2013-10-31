@@ -1,9 +1,0 @@
-[[Image(/files/screenshots/lwuit-categorybar-3.png, 200)]] [[Image(/files/screenshots/lwuit-categorybar-4.png, 200)]] [[Image(/files/screenshots/lwuit-categorybar-5.png, 200)]]
-
-See [wiki:WikiStart the wiki] for documentation.
-
-== Compatibility ==
-
-* Compatible with Nokia Asha software platform 1.0 and Series 40 phones.
-* Tested on Nokia Asha 501, Nokia Asha 311 and Nokia Asha 306.
-* Developed with Nokia Asha SDK 1.0.
