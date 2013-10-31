@@ -1,0 +1,26 @@
+= LWUIT Birthdays documentation
+Follow the links below for further information on the project:
+
+ * [wiki:Design Design]
+ * [wiki:Implementation Implementation]
+ * [wiki:LWUITRelated Thoughts on LWUIT]
+
+== Compatibility ==
+
+* Compatible with Nokia Asha software platform 1.0 and Series 40 touch devices with CLDC 1.1, MIDP 2.0 and PIM API (JSR-75).
+* Tested on Nokia Asha 501, Nokia Asha 311 and Nokia Asha 306.
+* Developed with Nokia Asha SDK 1.0.
+
+== Project information ==
+
+  * Project name: [[ProjectName()]]
+  * Project identifier: [[ProjectIdentifier()]]
+  * Owner: [[ProjectOwner()]]
+  * Create date: [[ProjectCreateDate()]]
+  * Project url: [[ProjectUrl()]]
+  * Version control: [[ProjectVersioncontrolUrl()]]
+  * Project (WebDAV) shared folder: [[ProjectWebDavUrl()]]
+  * Downloads: [wiki:Downloads]
+
+== Release downloads ==
+[[FeaturedDownloads()]]

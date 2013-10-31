@@ -1,0 +1,79 @@
+Category Bar Demo demonstrate how to use a category bar together with the LWUIT framework.
+
+
+== Design ==
+The MIDlet starts in the "add content" view demonstrating how the action !#1 button can be used with category bar and LWUIT. The other two examples can be reached from the category bar that is visible throughout the demo. 
+
+[[Image(/files/screenshots/lwuit-categorybar-3.png)]] [[Image(/files/screenshots/lwuit-categorybar-4.png)]] [[Image(/files/screenshots/lwuit-categorybar-5.png)]]
+
+== Implementation ==
+
+LWUIT, views and a category bar are initialized when the MIDlet starts. To initialise LWUIT:
+
+{{{
+Display.init(this); // initialize LWUIT Display
+}}}
+
+Views are implemented by !AddContentView, !ImageView and !AboutView classes. To initialise the views:
+
+{{{
+views = new Vector();
+views.addElement(new AddContentView());
+showView(0);
+views.addElement(new ImageView());
+views.addElement(new AboutView(
+    getAppProperty("MIDlet-Name"),
+    getAppProperty("MIDlet-Vendor"), 
+    getAppProperty("MIDlet-Version")));
+}}}
+
+Using the category bar is fairly easy. To initialise a !CategoryBar:
+
+{{{
+IconCommand[] iconCommands = new IconCommand[views.size()];
+for (int i = 0; i < iconCommands.length; i++) {
+    Image icon = (Image) ImageUtil.loadImage(
+        ((View) views.elementAt(i)).getIconPath()).getImage();
+    iconCommands[i] = new IconCommand(
+        ((View) views.elementAt(i)).getLabel(),
+        icon,
+        null,
+        Command.SCREEN, 1);
+}
+
+categoryBar = new CategoryBar(iconCommands, true);
+categoryBar.setElementListener(DemoMidlet.this);
+categoryBar.setVisibility(true);
+}}}
+
+!CategoryBar sends events to a listening !ElementListener. In this example, the main MIDlet implements !ElementListener and listens to category changes in the !CategoryBar:
+
+{{{
+public void notifyElementSelected(CategoryBar bar, int selectedIndex) {
+    try {
+        showView(selectedIndex);
+    }
+    catch (IndexOutOfBoundsException e) {
+        // Back button was pressed
+        notifyDestroyed();
+    }
+}
+
+private void showView(int index) {
+    ((View) views.elementAt(index)).show();
+}
+}}}
+
+== Project information ==
+
+  * Project name: [[ProjectName()]]
+  * Project identifier: [[ProjectIdentifier()]]
+  * Owner: [[ProjectOwner()]]
+  * Create date: [[ProjectCreateDate()]]
+  * Project url: [[ProjectUrl()]]
+  * Version control: [[ProjectVersioncontrolUrl()]]
+  * Project (WebDAV) shared folder: [[ProjectWebDavUrl()]]
+  * Downloads: [wiki:Downloads]
+
+== Release downloads ==
+[[FeaturedDownloads()]]

@@ -1,0 +1,285 @@
+= Implementation =
+[[PageOutline()]]
+
+== Prerequisites
+You need the following to test and develop this MIDlet:
+
+- !NetBeans with Java ME support, or Nokia SDK 2.0
+- [http://projects.developer.nokia.com/LWUIT_for_Series_40 LWUIT for S40 library]
+- A Series 40 with CLDC 1.1, MIDP 2.0 and PIM API (JSR-75)
+
+== Implementation details
+
+=== View flow
+
+The main !BirthdayMidlet class works as a view controller. The views themselves have no idea what's going to happen where their responsibility ends: BirthdayMidlet is the glue that binds that views together by using a couple of Listener classes. Whenever a view exits with a result, the listener assigned by BirthdayMidlet will take care of the next steps:
+
+{{{
+#!java
+        birthdaysListView = new BirthdayListView(
+            new ContactSelectionListener() {
+                public void contactSelected(Contact contact) {
+                    contactListView.show();
+                }
+            }, new BackListener() {
+                public void backCommanded() {
+                    try {
+                        destroyApp(true);
+                        notifyDestroyed();
+                    }
+                    catch (MIDletStateChangeException ex) {}
+                }
+            }
+        );
+}}}
+
+The birthday list view and contact list views are only created once and then re-used, but the birthday creation view is recreated whenever a new Contact is assigned:
+
+{{{
+#!java
+        // Whenever a new contact is selected for editing, a new instance of
+        // BirthdayCreateView is created.
+        ContactSelectionListener listener = new ContactSelectionListener() {            
+            public void contactSelected(final Contact contact) {
+                birthdayCreateView = new BirthdayCreateView(
+                    contact,
+                    new BirthdayCreationListener() {
+                        public void birthdayAdded(Birthday birthday) {
+                            try {
+                                listModel.addItem(birthday);
+                                birthdaysListView.show();
+                                contactListView.refresh();
+                            }
+                            catch (PIMNotAccessibleException ex) {
+                                showErrorDialog("Sorry",
+                                    "The birthday could not be added. " +
+                                    "Please try again.");
+                            }
+                        }
+                    }, new BackListener() {
+                        public void backCommanded() {
+                            birthdaysListView.show();
+                        }
+                    }
+                );
+                birthdayCreateView.show();
+            }
+        };
+        
+        contactListView = new ContactListView(listener, new BackListener() {
+            public void backCommanded() {
+                birthdaysListView.show();
+            }
+        });
+
+}}}
+
+
+=== Using the PIM API to get and add contact birthdays
+
+The PIM API is only opened and closed once in the application. This happens in BirthdayMidlet:
+
+{{{
+#!java
+     private boolean openPIMConnection() {
+        if (System.getProperty("microedition.pim.version") == null) {
+            return false;
+        }
+            
+        try {
+            pimContactList = (ContactList)
+                PIM.getInstance().openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE);
+            return true;
+        }
+        // Catch both PIMException and SecurityException
+        catch (Exception ex) {
+            return false;
+        }
+    }
+}}}
+
+{{{
+#!java
+    protected void destroyApp(boolean unconditional)
+        throws MIDletStateChangeException {
+        
+        if (pimContactList != null) {
+            try {
+                pimContactList.close();
+            }
+            catch (PIMException ex) {}
+        }
+    }
+}}}
+
+PIMContactHandler is the class that reads and updates the phonebook contacts via the PIM API. To avoid repetition, there is only one generic method that actually reads Contacts from the API: getContactsWithFilter(). This method is passed a simple filter object, a !ContactFilter, to create various custom collections. In this application, we have two kinds of collections:
+
+- getBirthdays() returns Birthday objects for all phonebook contacts with a birthday assigned
+- getContactsWithoutBirthday() returns Contact objects that do not yet have a birthday to them
+
+This is how we get and iterate over contacts with the PIM API. Note that the filter passed to the methoked is invoked for each single Contact object to decide whether it should be included in the list returned:
+{{{
+#!java
+    private Vector getContactsWithFilter(ContactFilter filter)
+        throws PIMNotAccessibleException {
+        
+        Vector contacts = new Vector();
+        ContactList contactList =
+            BirthdayMidlet.getInstance().getPIMContactList();
+        Enumeration contactItems = null;
+        
+        try {
+            contactItems = contactList.items();
+        }
+        catch (Exception e) {
+            throw new PIMNotAccessibleException(e.getMessage());
+        }
+        
+        Contact contact = null;
+        while (contactItems.hasMoreElements()) {
+            contact = (Contact) contactItems.nextElement();
+            
+            // Let the filter decide if the Contact should be included or not.
+            // If the Filter returns a non-null value, it will be added in
+            // the Vector.
+            Object filteredContact = filter.filterContact(contact);
+            if (filteredContact != null) {
+                contacts.addElement(filteredContact);
+            }            
+        }        
+        return contacts;        
+    }
+}}}
+
+After we have the filter mechanism in place, creating custom collections with it is nice & easy:
+
+{{{
+#!java
+    public Vector getContactsWithoutBirthday() throws PIMNotAccessibleException {
+        return getContactsWithFilter(new ContactFilter() {
+            
+            // Only include Contacts with no birthday assigned
+            public Object filterContact(Contact contact) {                
+                if (contact.countValues(Contact.BIRTHDAY) < 1) {
+                    return contact;
+                }
+                return null;
+            }
+        });
+    }    
+}}}
+
+=== Sorting dates by upcoming birthdays
+
+Sorting birthdays is a bit different from sorting just regular days, because birthdays repeat every year. That means we are not interested in sorting them by their year, but instead of their relative position compared to the current time of year! Because we want the application to show birthdays in the order in which they will occur as viewed from today, we need to consider the days that have already happened this year, and those that will still come before the year changes.
+
+To achieve this, a !BirthdaySorter class was created. The J2ME specification does not support the normal Java Comparators, but luckily that doesn't prevent us from emulating the way they work. !BirthdaySorter uses an implementation of quick sort, but the actual sorting algorithm doesn't really matter, as long as we have a reliable way of comparing two date objects with each other, and deciding which one of them should come before the other one.
+
+Here is what the compare() method looks like. It returns BEFORE (-1) if date1 should appear before date2, AFTER (1) if date2 should appear before date1, and EQUAL if it doesn't matter which one comes first:
+
+{{{
+#!java
+    private int compare(Birthday date1, Birthday date2) {
+        /*
+         * Disregard the year by comparing the dates as if they belong to
+         * current year: here we're only interested in the month + day.
+         */
+        CAL1.setTime(date1.getDate());
+        CAL1.set(Calendar.YEAR, CURRENT_YEAR);
+        CAL2.setTime(date2.getDate());
+        CAL2.set(Calendar.YEAR, CURRENT_YEAR);
+
+        /*
+         * Because we're not interested in time of the day, today's birthdays
+         * easily get mistreated as having already happened unless we consider
+         * them individually. If there are multiple birthdays on the same day,
+         * it doesn't matter which one of them we display first.
+         */
+        if (isToday(CAL1)) {
+            return BEFORE;
+        }
+        else if (isToday(CAL2)) {
+            return AFTER;
+        }        
+        
+        /*
+         * If one of the two dates has already occurred this year and the 
+         * other one hasn't, the next occurrence (from now) comes first.
+         */
+        long time1 = CAL1.getTime().getTime();
+        long time2 = CAL2.getTime().getTime();
+        
+        if (time1 < NOW_MILLIS && time2 > NOW_MILLIS) {
+            // time1 has also happened this year, needs to go after time2
+            return AFTER;
+        }
+        else if (time1 > NOW_MILLIS && time2 < NOW_MILLIS) {
+            return BEFORE;
+        }
+
+        /*
+         * If we reached this point, if means time1 and time2 are both on the
+         * same side of the year, and we can compare them normally.
+         */
+        long diff = time1 - time2;
+        // If date1 < date2, return BEFORE (-1)
+        if (diff < 0) {
+            return BEFORE;
+        } // If date2 > date1, return AFTER (1)
+        else if (diff > 0) {
+            return AFTER;
+        }
+        return EQUAL;
+    }
+}}}
+
+=== Formatting dates
+
+Dates are always challenging to handle, and even more challenging for humans to comprehend at a glance. To make the list of upcoming birthdays easy to read, some pretty-printing was applied to them, in the form of a !BirthdayPrettyPrinter. It does three things:
+- calculates how old a birthday hero will be on his/her next birthday ("28")
+- converts a date into a more convenient representation, such as "Oct 5 1998"
+- prints human-readable times until a certain date, e.g. "in 6 months"
+
+The pretty-printer makes use of the Calendar class to calculate the difference between the current time and another. After that, it's mostly a matter of parsing the seconds between the two timestamps at sensible intervals:
+
+{{{
+#!java
+    private static String getHumanReadableTimeUntilDate(long secondsUntilBirthday) {
+        if (secondsUntilBirthday < 86400) {
+            return "today";
+        }
+        else if (secondsUntilBirthday < 172800) {
+            return "tomorrow";
+        }
+        
+        long units = 0;
+        String unit = "";
+        
+        // Less then a week -> "x days"
+        if (secondsUntilBirthday < 604800) {
+            units = secondsUntilBirthday / 86400;
+            unit = units + " days";            
+        }
+        // Less than a month -> "x weeks"
+        else if (secondsUntilBirthday < 2592000) {
+            units = secondsUntilBirthday / 604800;
+            unit = (units > 1 ? "" + units : "a") +
+                " week" + (units > 1 ? "s" : "");
+        }
+        // Less than a year -> "x months" (11 full months at most)
+        else if (secondsUntilBirthday < 31536000) {
+            units = Math.min(11, secondsUntilBirthday / 2592000);
+            unit = (units > 1 ? "" + units : "a") +
+                " month" + (units > 1 ? "s" : "");
+        }
+        
+        return "in " + unit;        
+    }    
+}}}
+
+
+== Application architecture ==
+
+The diagram below shows an overview of the application architecture and the general relationships between its components.
+
+[[Image(lwuit-birthdays-architecture-800px.png)]]

@@ -1,0 +1,5 @@
+= LWUIT notes
+
+This application does not pose extensive visual challenges, and implementing it on LWUIT was overall a rather pleasant and straightforward experience.
+
+Even though the list items could have been created with the default renderer, !DefaultListCellRenderer, custom renderer implementations were created in order to get full control of styling the list items.

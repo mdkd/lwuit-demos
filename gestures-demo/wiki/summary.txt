@@ -1,0 +1,11 @@
+LWUIT Gestures Demo consists of two different views: grid view for browsing and arranging images, and image view for viewing, zooming and panning images. For simplicity the images are hard coded into the application.
+
+[[Image(/files/screenshots/lwuit-gesturedemo-1.png, 200)]] [[Image(/files/screenshots/lwuit-gesturedemo-2.png, 200)]] [[Image(/files/screenshots/lwuit-gesturedemo-3.png, 200)]]
+
+See [wiki:WikiStart the wiki] for documentation.
+
+== Compatibility ==
+
+* Compatible with Nokia Asha software platform 1.0 and Series 40 touch phones.
+* Tested on Nokia Asha 501, Nokia Asha 311 and Nokia Asha 306.
+* Developed with Nokia Asha SDK 1.0.
